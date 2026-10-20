@@ -71,6 +71,7 @@
         <nav class="tabs">
           <button class="tab active" data-tab="planning">📋 Planning</button>
           <button class="tab" data-tab="photo">🖼️ Edit Foto</button>
+          <button class="tab" data-tab="watch">📺 Nonton</button>
           <button class="tab" data-tab="game">🕹️ Game</button>
         </nav>
 
@@ -129,6 +130,33 @@
           </div>
         </div>
 
+        <!-- Nonton YouTube bareng -->
+        <div id="tab-watch" class="tab-body hidden">
+          <form id="ytForm" class="yt-form">
+            <input id="ytUrl" placeholder="Tempel link YouTube, mis. https://youtu.be/..." autocomplete="off" />
+            <button class="btn primary">▶️ Putar / Tambah</button>
+          </form>
+          <p id="ytError" class="error small-text"></p>
+          <div class="yt-layout">
+            <div class="yt-main">
+              <div class="yt-frame">
+                <div id="ytPlayer"></div>
+                <div id="ytEmpty" class="yt-empty">📺 Tempel link YouTube di atas untuk mulai nonton bareng</div>
+              </div>
+              <div id="ytNow" class="yt-now hidden">
+                <span id="ytTitle" class="yt-title"></span>
+                <button id="ytNextBtn" class="btn small">⏭️ Lewati</button>
+                <button id="ytStopBtn" class="btn small danger">⏹️ Berhenti</button>
+              </div>
+              <p class="muted small-text">🎧 Pakai earphone supaya suara video tidak masuk ke mic saat voice. Play, pause, dan lompat waktu otomatis sama untuk semua orang.</p>
+            </div>
+            <div class="yt-queue">
+              <h4>Antrean</h4>
+              <ol id="ytQueue"></ol>
+            </div>
+          </div>
+        </div>
+
         <!-- Game -->
         <div id="tab-game" class="tab-body hidden">
           <div class="game-picker">
@@ -137,6 +165,8 @@
             <button class="btn" data-game="chess">♟️ Catur</button>
             <button class="btn" data-game="tebak">🎨 Tebak Gambar</button>
             <button class="btn" data-game="werewolf">🐺 Werewolf</button>
+            <button class="btn" data-game="undercover">🎭 Undercover</button>
+            <button class="btn" data-game="uno">🃏 UNO</button>
           </div>
           <div id="boardView">
           <div id="gameArea" class="hidden">
@@ -248,6 +278,87 @@
                 </ul>
               </details>
             </div>
+          </div>
+
+          <!-- Undercover -->
+          <div id="ucView" class="hidden">
+            <div class="ww-top">
+              <span id="ucPhase" class="ww-phase"></span>
+              <span id="ucTimer" class="tg-timer"></span>
+            </div>
+            <div id="ucEvent" class="ww-event hidden"></div>
+            <div id="ucWord" class="uc-word hidden"></div>
+            <p id="ucHint" class="ww-hint"></p>
+            <form id="ucClueForm" class="tg-guess hidden">
+              <input id="ucClueInput" maxlength="40" placeholder="Ketik petunjuk (opsional)..." autocomplete="off" />
+              <button class="btn primary">Kirim</button>
+              <button type="button" id="ucDoneBtn" class="btn">🎙️ Sudah bicara</button>
+            </form>
+            <form id="ucGuessForm" class="tg-guess hidden">
+              <input id="ucGuessInput" maxlength="40" placeholder="Tebak kata warga..." autocomplete="off" />
+              <button class="btn primary">Tebak</button>
+            </form>
+            <div id="ucPlayers" class="ww-players"></div>
+            <div class="game-actions">
+              <button id="ucStopBtn" class="btn danger hidden">⏹️ Hentikan</button>
+            </div>
+            <div id="ucSetup" class="ww-setup">
+              <h4>⚙️ Pengaturan</h4>
+              <div id="ucConfig" class="ww-config"></div>
+              <button id="ucStartBtn" class="btn primary">🎭 Mulai Undercover</button>
+              <details class="ww-rules">
+                <summary>📖 Cara bermain</summary>
+                <ul>
+                  <li>Semua pemain dapat <b>kata yang sama</b>, kecuali <b>🕵️ Undercover</b> yang dapat kata mirip (mis. "Kopi" vs "Teh"). <b>Kamu tidak diberi tahu</b> apakah kamu Undercover!</li>
+                  <li><b>👻 Mr. White</b> (opsional) tidak dapat kata sama sekali — harus pura-pura tahu.</li>
+                  <li>Bergiliran beri satu petunjuk tentang katamu lewat voice (atau ketik). Jangan terlalu jelas, nanti Undercover ikut tahu!</li>
+                  <li>Setelah semua bicara, vote siapa yang paling mencurigakan. Yang tersingkir dibuka perannya.</li>
+                  <li>Kalau Mr. White tersingkir, dia boleh menebak kata warga — benar = Mr. White menang sendirian.</li>
+                  <li>Warga menang kalau semua penyusup tersingkir. Penyusup menang kalau jumlahnya sudah sama dengan warga.</li>
+                </ul>
+              </details>
+            </div>
+          </div>
+
+          <!-- UNO -->
+          <div id="unoView" class="hidden">
+            <div class="ww-top">
+              <span id="unoInfo" class="ww-phase">🃏 UNO</span>
+              <span id="unoTimer" class="tg-timer"></span>
+            </div>
+            <div id="unoPlayers" class="uno-players"></div>
+            <div id="unoTable" class="uno-table hidden">
+              <div class="uno-pile">
+                <button id="unoDrawBtn" class="uno-card back" title="Ambil kartu"><span>UNO</span></button>
+                <small id="unoDrawCount"></small>
+              </div>
+              <div class="uno-pile">
+                <div id="unoTop"></div>
+                <small id="unoColor"></small>
+              </div>
+            </div>
+            <p id="unoAction" class="uno-action"></p>
+            <div class="uno-buttons">
+              <button id="unoCallBtn" class="btn hidden">📣 UNO!</button>
+              <button id="unoCatchBtn" class="btn danger hidden">🚨 Tangkap!</button>
+              <button id="unoPassBtn" class="btn hidden">⏭️ Lewati</button>
+            </div>
+            <div id="unoHand" class="uno-hand"></div>
+            <div id="unoColorPicker" class="uno-color-picker hidden">
+              <p>Pilih warna:</p>
+              <div>
+                <button class="uno-swatch red" data-color="red"></button>
+                <button class="uno-swatch yellow" data-color="yellow"></button>
+                <button class="uno-swatch green" data-color="green"></button>
+                <button class="uno-swatch blue" data-color="blue"></button>
+              </div>
+              <button id="unoColorCancel" class="btn small">Batal</button>
+            </div>
+            <div class="game-actions">
+              <button id="unoStartBtn" class="btn primary">🃏 Mulai UNO</button>
+              <button id="unoStopBtn" class="btn danger hidden">⏹️ Hentikan</button>
+            </div>
+            <p id="unoRules" class="muted small-text">Habiskan kartumu lebih dulu! Cocokkan warna atau angka/simbol kartu teratas. Saat kartumu tinggal 1, tekan <b>📣 UNO!</b> — kalau lupa dan ketahuan, kena +2 kartu. 2–10 pemain.</p>
           </div>
         </div>
       </main>

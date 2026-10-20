@@ -28,14 +28,14 @@ export function initGame(ctx) {
   const { socket } = ctx;
   const $ = (id) => document.getElementById(id);
   let game = null;
-  let view = 'board'; // 'board' | 'tebak' | 'werewolf'
+  // Tampilan di tab Game; 'board' dipakai Tic-Tac-Toe, Connect 4, dan Catur
+  const VIEWS = { board: 'boardView', tebak: 'tebakView', werewolf: 'wwView', undercover: 'ucView', uno: 'unoView' };
+  let view = 'board';
   let selected = null; // kotak catur yang sedang dipilih
 
   function showView(v) {
     view = v;
-    $('boardView').classList.toggle('hidden', v !== 'board');
-    $('tebakView').classList.toggle('hidden', v !== 'tebak');
-    $('wwView').classList.toggle('hidden', v !== 'werewolf');
+    for (const [key, id] of Object.entries(VIEWS)) $(id).classList.toggle('hidden', key !== v);
     highlightPicker();
   }
   ctx.showGameView = showView;
@@ -189,7 +189,7 @@ export function initGame(ctx) {
   document.querySelectorAll('[data-game]').forEach((b) => {
     b.onclick = () => {
       const type = b.dataset.game;
-      if (type === 'tebak' || type === 'werewolf') return showView(type);
+      if (VIEWS[type]) return showView(type);
       showView('board');
       if (game?.type === type) return;
       if (game && !confirm('Ganti game? Permainan sekarang akan diulang.')) return;

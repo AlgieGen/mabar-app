@@ -13,6 +13,9 @@ Website untuk kumpul bareng teman secara online: bikin room, planning, edit foto
 - **Game papan** — Tic-Tac-Toe dan Connect 4 (2 pemain, sisanya menonton).
 - **♟️ Catur** — aturan lengkap (skakmat, remis, rokade, en passant, promosi), papan dibalik untuk hitam, riwayat langkah, menyerah.
 - **🐺 Werewolf** — 4+ pemain, 11 peran yang bisa dipilih sendiri: Werewolf, Peramal, Dokter, Penyihir, Pemburu, Kupid, Tetua, Kepala Desa, Pengkhianat, Badut, Warga. Fase malam & voting siang. Paling seru sambil voice!
+- **🎭 Undercover** — semua dapat kata yang sama kecuali Undercover (kata mirip) dan Mr. White (tanpa kata). Beri petunjuk bergiliran, lalu vote. 70 pasangan kata.
+- **🃏 UNO** — 2–10 pemain, aturan lengkap (+2, +4, skip, balik arah, ganti warna), seruan UNO! dan tombol tangkap.
+- **📺 Nonton YouTube bareng** — play/pause/lompat waktu tersinkron untuk semua orang, dengan antrean video.
 - **🎨 Tebak Gambar** — bergiliran menggambar, yang lain menebak lewat chat. Ada timer 80 detik, petunjuk huruf, poin (makin cepat makin besar), dan papan skor. Daftar kata bisa ditambah di `words.js`.
 - **Sambung ulang otomatis** kalau koneksi putus.
 
@@ -68,6 +71,9 @@ Saat start, server menulis `Voice: TURN aktif (...)` kalau berhasil.
 server.js            Server Express + Socket.IO (room, sinkronisasi, signaling voice, penyimpanan)
 tebak.js             Logika game Tebak Gambar
 werewolf.js          Logika game Werewolf
+undercover.js        Logika game Undercover
+uno.js               Logika game UNO
+watch.js             Nonton YouTube bareng
 ice.js               Server STUN/TURN untuk voice
 words.js             Daftar kata Tebak Gambar
 public/index.html    Tampilan
@@ -78,5 +84,8 @@ public/js/planning.js
 public/js/photo.js
 public/js/game.js       Tic-Tac-Toe, Connect 4 & Catur
 public/js/werewolf.js   Werewolf
+public/js/undercover.js Undercover
+public/js/uno.js        UNO
+public/js/watch.js      Nonton YouTube bareng
 public/js/tebak.js      Tebak Gambar
 ```

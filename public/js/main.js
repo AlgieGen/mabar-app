@@ -4,6 +4,9 @@ import { initPhoto } from './photo.js';
 import { initGame } from './game.js';
 import { initTebak } from './tebak.js';
 import { initWerewolf } from './werewolf.js';
+import { initUndercover } from './undercover.js';
+import { initUno } from './uno.js';
+import { initWatch } from './watch.js';
 import { escapeHtml } from './util.js';
 
 const $ = (id) => document.getElementById(id);
@@ -26,6 +29,9 @@ const photo = initPhoto(ctx);
 const game = initGame(ctx);
 const tebak = initTebak(ctx);
 const werewolf = initWerewolf(ctx);
+const undercover = initUndercover(ctx);
+const uno = initUno(ctx);
+const watch = initWatch(ctx);
 
 // ---------- Utilitas ----------
 let toastTimer;
@@ -100,6 +106,9 @@ function enterRoom({ me, room }) {
   game.load(room.game);
   tebak.load(room.tebak);
   werewolf.reset();
+  undercover.reset();
+  uno.reset();
+  watch.reset();
 }
 
 $('copyLinkBtn').onclick = async () => {

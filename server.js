@@ -8,6 +8,9 @@ const { Server } = require('socket.io');
 const { createTebak } = require('./tebak');
 const ice = require('./ice');
 const { createWerewolf } = require('./werewolf');
+const { createUndercover } = require('./undercover');
+const { createUno } = require('./uno');
+const { createWatch } = require('./watch');
 const { Chess } = require('chess.js');
 
 const app = express();
@@ -86,7 +89,7 @@ function cleanupRooms() {
   for (const r of rooms.values()) {
     if (r.members.size === 0 && Date.now() - r.lastActive > ROOM_TTL) {
       tebak.remove(r);
-      werewolf.remove(r);
+      modules.forEach((m) => m.remove(r));
       rooms.delete(r.code);
       dirty = true;
     }
@@ -185,7 +188,8 @@ function checkWinner(game, idx) {
 }
 
 const tebak = createTebak(io, systemMessage);
-const werewolf = createWerewolf(io, systemMessage);
+// Modul permainan/fitur dengan pola yang sama: register, onJoin, onLeave, remove
+const modules = [createWerewolf, createUndercover, createUno, createWatch].map((create) => create(io, systemMessage));
 
 io.on('connection', (socket) => {
   const room = () => rooms.get(socket.data.code);
@@ -197,7 +201,7 @@ io.on('connection', (socket) => {
     if (r) r.lastActive = Date.now();
   });
   tebak.register(socket, room);
-  werewolf.register(socket, room);
+  modules.forEach((m) => m.register(socket, room));
 
   // ---------- Room ----------
   socket.on('room:create', ({ roomName } = {}, cb) => {
@@ -219,7 +223,7 @@ io.on('connection', (socket) => {
       room: { code: r.code, name: r.name, chat: r.chat, plan: r.plan, photo: r.photo, game: r.game, tebak: tebak.publicState(r), members: membersList(r) },
     });
     tebak.onJoin(r, socket.id, name);
-    werewolf.onJoin(r, socket.id);
+    modules.forEach((m) => m.onJoin(r, socket.id));
     io.to(r.code).emit('members', membersList(r));
     systemMessage(r, `${name} bergabung ke room`);
   });
@@ -412,7 +416,7 @@ io.on('connection', (socket) => {
       emitGame(r);
     }
     tebak.onLeave(r, socket.id);
-    werewolf.onLeave(r, socket.id);
+    modules.forEach((m) => m.onLeave(r, socket.id));
     if (r.members.size === 0) return;
     io.to(r.code).emit('members', membersList(r));
     systemMessage(r, `${m.name} keluar dari room`);
