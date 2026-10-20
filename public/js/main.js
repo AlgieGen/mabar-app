@@ -7,6 +7,7 @@ import { initWerewolf } from './werewolf.js';
 import { initUndercover } from './undercover.js';
 import { initUno } from './uno.js';
 import { initWatch } from './watch.js';
+import { initSfx } from './sfx.js';
 import { escapeHtml } from './util.js';
 
 const $ = (id) => document.getElementById(id);
@@ -23,6 +24,7 @@ const ctx = {
   toast,
 };
 
+initSfx(ctx);
 const voice = initVoice(ctx);
 const planning = initPlanning(ctx);
 const photo = initPhoto(ctx);

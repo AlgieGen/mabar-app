@@ -18,6 +18,7 @@ Website untuk kumpul bareng teman secara online: bikin room, planning, edit foto
 - **📺 Nonton YouTube bareng** — play/pause/lompat waktu tersinkron untuk semua orang, dengan antrean video.
 - **🎨 Tebak Gambar** — bergiliran menggambar, yang lain menebak lewat chat. Ada timer 80 detik, petunjuk huruf, poin (makin cepat makin besar), dan papan skor. Daftar kata bisa ditambah di `words.js`.
 - **Sambung ulang otomatis** kalau koneksi putus.
+- **Tema Pixel Art / Retro Arcade** dengan **efek suara 8-bit** (klik, chat, giliran, menang/kalah, malam/siang Werewolf, UNO!) — bisa dimatikan lewat tombol 🔊 SFX.
 
 ## Menjalankan
 ```bash
