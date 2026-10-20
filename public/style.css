@@ -352,3 +352,20 @@ input[type="range"] { padding: 0; accent-color: var(--primary); }
   .seat { min-width: 0; flex: 1; padding: 8px; font-size: 13px; }
   .sq { width: min(40px, calc((100vw - 52px) / 8)); height: min(40px, calc((100vw - 52px) / 8)); }
 }
+
+/* ===== Werewolf: pengaturan peran ===== */
+.ww-setup h4 { margin: 0; }
+.ww-config { width: 100%; background: var(--panel-2); border-radius: 10px; padding: 12px; }
+.ww-config-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.ww-role-picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.ww-pick { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; user-select: none; }
+.ww-pick.on { border-color: var(--primary); background: rgba(124, 92, 255, .15); }
+.ww-pick input { accent-color: var(--primary); }
+.ww-config .error { margin-top: 8px; min-height: 0; }
+.ww-roster { color: var(--muted); font-size: 13px; }
+.ww-badge.wolf { background: rgba(255, 77, 109, .3); }
+.ww-badge.village { background: rgba(76, 201, 240, .2); }
+.ww-badge.jester { background: rgba(255, 210, 63, .25); }
+.ww-badge.lover { background: rgba(255, 143, 171, .3); }
+.ww-witch { margin-top: 8px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); }
+.ww-witch-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }

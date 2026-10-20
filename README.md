@@ -12,7 +12,7 @@ Website untuk kumpul bareng teman secara online: bikin room, planning, edit foto
 - **Edit foto bareng** — upload foto, coret pena/penghapus, tambah teks, filter (kecerahan, kontras, saturasi, hitam-putih, sepia, hue, blur), undo, download. Semua tersinkron ke semua orang di room.
 - **Game papan** — Tic-Tac-Toe dan Connect 4 (2 pemain, sisanya menonton).
 - **♟️ Catur** — aturan lengkap (skakmat, remis, rokade, en passant, promosi), papan dibalik untuk hitam, riwayat langkah, menyerah.
-- **🐺 Werewolf** — 4+ pemain dengan peran Werewolf, Peramal, Dokter, Warga; fase malam & voting siang. Paling seru sambil voice!
+- **🐺 Werewolf** — 4+ pemain, 11 peran yang bisa dipilih sendiri: Werewolf, Peramal, Dokter, Penyihir, Pemburu, Kupid, Tetua, Kepala Desa, Pengkhianat, Badut, Warga. Fase malam & voting siang. Paling seru sambil voice!
 - **🎨 Tebak Gambar** — bergiliran menggambar, yang lain menebak lewat chat. Ada timer 80 detik, petunjuk huruf, poin (makin cepat makin besar), dan papan skor. Daftar kata bisa ditambah di `words.js`.
 - **Sambung ulang otomatis** kalau koneksi putus.
 

@@ -219,21 +219,32 @@
             <div id="wwRole" class="ww-role hidden"></div>
             <p id="wwHint" class="ww-hint"></p>
             <div id="wwPlayers" class="ww-players"></div>
+            <p id="wwRoster" class="ww-roster"></p>
             <div class="game-actions">
               <button id="wwSkipBtn" class="btn hidden">🤷 Lewati (tidak vote)</button>
               <button id="wwStopBtn" class="btn danger hidden">⏹️ Hentikan</button>
             </div>
             <div id="wwSetup" class="ww-setup">
+              <h4>⚙️ Pilih peran</h4>
+              <div id="wwConfig" class="ww-config"></div>
               <button id="wwStartBtn" class="btn primary">🐺 Mulai Werewolf</button>
               <details class="ww-rules">
                 <summary>📖 Cara bermain</summary>
                 <ul>
-                  <li><b>🐺 Werewolf</b> — setiap malam memilih satu korban. Menang kalau jumlahnya sama dengan sisa warga.</li>
-                  <li><b>🔮 Peramal</b> — setiap malam menerawang satu orang: werewolf atau bukan.</li>
-                  <li><b>💉 Dokter</b> — setiap malam melindungi satu orang (tidak boleh orang yang sama 2 malam berturut-turut).</li>
-                  <li><b>🧑‍🌾 Warga</b> — diskusi lewat voice, cari werewolf, lalu vote di siang hari.</li>
-                  <li>Minimal 4 pemain. 8+ pemain: 2 werewolf, 12+: 3 werewolf.</li>
-                  <li>Pemain yang sudah mati sebaiknya diam ya 🤫</li>
+                  <li><b>Tujuan:</b> warga harus mengeksekusi semua werewolf. Werewolf menang kalau jumlahnya sama dengan sisa pemain lain.</li>
+                  <li><b>Malam:</b> pemain dengan kemampuan beraksi diam-diam. <b>Siang:</b> semua diskusi lewat voice lalu vote; suara terbanyak dieksekusi.</li>
+                  <li><b>🐺 Werewolf</b> — memilih korban setiap malam.</li>
+                  <li><b>🔮 Peramal</b> — menerawang satu orang setiap malam: werewolf atau bukan.</li>
+                  <li><b>💉 Dokter</b> — melindungi satu orang setiap malam (tidak boleh orang yang sama 2 malam berturut-turut).</li>
+                  <li><b>🧪 Penyihir</b> — 1 ramuan penyelamat & 1 racun, masing-masing sekali per game.</li>
+                  <li><b>🏹 Pemburu</b> — saat mati, boleh menembak satu orang.</li>
+                  <li><b>💘 Kupid</b> — malam pertama menjodohkan 2 orang; kalau satu mati, pasangannya ikut mati. Kalau berdua bertahan sampai akhir, mereka menang.</li>
+                  <li><b>👴 Tetua</b> — selamat dari serangan werewolf pertama.</li>
+                  <li><b>🎖️ Kepala Desa</b> — suaranya dihitung 2.</li>
+                  <li><b>🕵️ Pengkhianat</b> — pihak werewolf, tahu siapa werewolf, tapi terlihat warga bagi Peramal.</li>
+                  <li><b>🤡 Badut</b> — menang sendirian kalau dieksekusi warga.</li>
+                  <li><b>🧑‍🌾 Warga</b> — tidak punya kemampuan, andalkan diskusi!</li>
+                  <li>Minimal 4 pemain. Pemain yang sudah mati sebaiknya diam ya 🤫</li>
                 </ul>
               </details>
             </div>
