@@ -2,6 +2,8 @@
 
 Website untuk kumpul bareng teman secara online: bikin room, planning, edit foto bareng, main game, dan ngobrol pakai voice sambil main.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AlgieGen/mabar-app)
+
 ## Fitur
 - **Room** — buat room dengan kode 5 huruf, bagikan link undangan.
 - **Voice chat** — WebRTC peer-to-peer, ada mute dan indikator siapa yang sedang bicara.
