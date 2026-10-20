@@ -21,6 +21,15 @@ npm start
 ```
 Buka http://localhost:3000
 
+## Deploy ke VPS (disarankan)
+Butuh VPS Ubuntu 22.04/24.04 atau Debian 12 dengan IPv4 publik (bukan NAT) dan akses root. Login SSH lalu jalankan:
+```bash
+curl -fsSL https://raw.githubusercontent.com/AlgieGen/mabar-app/main/deploy/setup-vps.sh | bash
+```
+Skrip memasang Node.js, Caddy (HTTPS otomatis), dan service systemd. Tanpa domain, alamatnya `https://<ip-dengan-strip>.sslip.io`.
+Punya domain? Arahkan record A ke IP VPS, lalu tambahkan `-s -- domainkamu.com` di akhir perintah (`... | bash -s -- domainkamu.com`).
+Untuk update ke versi terbaru dari GitHub, jalankan ulang perintah yang sama.
+
 ## Deploy (Vercel + Render)
 Vercel tidak mendukung server yang terus menyala (dibutuhkan Socket.IO, game, dan voice), jadi deploy dibagi dua:
 
