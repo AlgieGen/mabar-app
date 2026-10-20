@@ -21,6 +21,9 @@ npm start
 ```
 Buka http://localhost:3000
 
+## Jalankan di laptop + link publik (gratis)
+Di Windows, klik dua kali **start-mabar.bat**. Server menyala dan Cloudflare Tunnel memberi link `https://....trycloudflare.com` untuk dibagikan ke teman (link berganti setiap start). Laptop harus tetap menyala. Matikan dengan **stop-mabar.bat**.
+
 ## Deploy ke VPS (disarankan)
 Butuh VPS Ubuntu 22.04/24.04 atau Debian 12 dengan IPv4 publik (bukan NAT) dan akses root. Login SSH lalu jalankan:
 ```bash
