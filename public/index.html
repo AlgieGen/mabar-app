@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MabarRoom</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== LOBBY ===== -->
+  <section id="lobby" class="screen">
+    <div class="lobby-card">
+      <h1>🎮 MabarRoom</h1>
+      <p class="muted">Bikin room, planning, edit foto, main game, dan ngobrol pakai voice bareng teman.</p>
+
+      <label>Nama kamu
+        <input id="userName" maxlength="24" placeholder="mis. Algie" />
+      </label>
+
+      <div class="lobby-split">
+        <div class="lobby-box">
+          <h3>Buat room baru</h3>
+          <input id="roomName" maxlength="40" placeholder="Nama room (opsional)" />
+          <button id="createBtn" class="btn primary">Buat Room</button>
+        </div>
+        <div class="lobby-box">
+          <h3>Gabung room</h3>
+          <input id="joinCode" maxlength="5" placeholder="Kode room, mis. AB3XZ" style="text-transform:uppercase" />
+          <button id="joinBtn" class="btn">Gabung</button>
+        </div>
+      </div>
+      <p id="lobbyError" class="error"></p>
+    </div>
+  </section>
+
+  <!-- ===== ROOM ===== -->
+  <section id="room" class="screen hidden">
+    <header class="topbar">
+      <div>
+        <strong id="roomTitle">Room</strong>
+        <span class="code-pill">Kode: <b id="roomCode">-----</b></span>
+      </div>
+      <div class="topbar-actions">
+        <button id="copyLinkBtn" class="btn small">🔗 Salin link undangan</button>
+        <button id="leaveRoomBtn" class="btn small danger">Keluar</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar: anggota + voice -->
+      <aside class="panel sidebar">
+        <h3>Anggota</h3>
+        <ul id="memberList" class="members"></ul>
+
+        <div class="voice-box">
+          <h3>🎙️ Voice</h3>
+          <button id="voiceJoinBtn" class="btn primary block">Gabung Voice</button>
+          <div id="voiceControls" class="voice-controls hidden">
+            <button id="muteBtn" class="btn block">🔇 Mute</button>
+            <button id="voiceLeaveBtn" class="btn danger block">Keluar Voice</button>
+          </div>
+          <p id="voiceError" class="error small-text"></p>
+        </div>
+      </aside>
+
+      <!-- Konten utama -->
+      <main class="panel main">
+        <nav class="tabs">
+          <button class="tab active" data-tab="planning">📋 Planning</button>
+          <button class="tab" data-tab="photo">🖼️ Edit Foto</button>
+          <button class="tab" data-tab="game">🕹️ Game</button>
+        </nav>
+
+        <!-- Planning -->
+        <div id="tab-planning" class="tab-body">
+          <div class="plan-grid">
+            <div>
+              <h3>Daftar rencana</h3>
+              <form id="taskForm" class="task-form">
+                <input id="taskText" maxlength="200" placeholder="Tambah rencana, mis. Beli tiket" required />
+                <input id="taskDate" type="date" />
+                <select id="taskAssignee"><option value="">Siapa saja</option></select>
+                <button class="btn primary">Tambah</button>
+              </form>
+              <ul id="taskList" class="tasks"></ul>
+              <p id="taskEmpty" class="muted">Belum ada rencana. Tambahkan yang pertama!</p>
+            </div>
+            <div>
+              <h3>Catatan bersama</h3>
+              <textarea id="notes" placeholder="Tulis ide, jadwal, budget... semua orang di room bisa mengedit."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Foto -->
+        <div id="tab-photo" class="tab-body hidden">
+          <div class="photo-toolbar">
+            <label class="btn small">📤 Upload foto<input id="photoInput" type="file" accept="image/*" hidden /></label>
+            <div class="tool-group">
+              <button class="btn small tool active" data-tool="pen">✏️ Pena</button>
+              <button class="btn small tool" data-tool="eraser">🧽 Hapus</button>
+              <button class="btn small tool" data-tool="text">🔤 Teks</button>
+            </div>
+            <input id="penColor" type="color" value="#ff3b6b" title="Warna" />
+            <label class="range-label">Ukuran <input id="penSize" type="range" min="1" max="40" value="6" /></label>
+            <button id="undoBtn" class="btn small">↩️ Undo</button>
+            <button id="clearBtn" class="btn small">🗑️ Bersihkan coretan</button>
+            <button id="downloadBtn" class="btn small primary">💾 Download</button>
+          </div>
+          <div class="photo-area">
+            <div class="canvas-wrap">
+              <canvas id="baseCanvas"></canvas>
+              <canvas id="drawCanvas"></canvas>
+            </div>
+            <div class="filters" id="filters">
+              <h4>Filter</h4>
+              <label>Kecerahan <input type="range" data-filter="brightness" min="0" max="200" /></label>
+              <label>Kontras <input type="range" data-filter="contrast" min="0" max="200" /></label>
+              <label>Saturasi <input type="range" data-filter="saturate" min="0" max="200" /></label>
+              <label>Hitam-putih <input type="range" data-filter="grayscale" min="0" max="100" /></label>
+              <label>Sepia <input type="range" data-filter="sepia" min="0" max="100" /></label>
+              <label>Hue <input type="range" data-filter="hue" min="0" max="360" /></label>
+              <label>Blur <input type="range" data-filter="blur" min="0" max="10" step="0.5" /></label>
+              <button id="resetFiltersBtn" class="btn small block">Reset filter</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game -->
+        <div id="tab-game" class="tab-body hidden">
+          <div class="game-picker">
+            <button class="btn" data-game="ttt">❌⭕ Tic-Tac-Toe</button>
+            <button class="btn" data-game="c4">🔴🟡 Connect 4</button>
+            <button class="btn" data-game="tebak">🎨 Tebak Gambar</button>
+          </div>
+          <div id="boardView">
+          <div id="gameArea" class="hidden">
+            <div class="seats">
+              <div class="seat" data-seat="0"></div>
+              <span class="vs">VS</span>
+              <div class="seat" data-seat="1"></div>
+            </div>
+            <p id="gameStatus" class="game-status"></p>
+            <div id="board" class="board"></div>
+            <div class="game-actions">
+              <button id="gameResetBtn" class="btn">🔄 Main lagi</button>
+              <button id="standBtn" class="btn">Berdiri dari kursi</button>
+            </div>
+          </div>
+          <p id="gameEmpty" class="muted">Pilih game di atas untuk mulai main bareng.</p>
+          </div>
+
+          <!-- Tebak Gambar -->
+          <div id="tebakView" class="hidden">
+            <div class="tg-top">
+              <span id="tgInfo" class="tg-info"></span>
+              <div id="tgWord" class="tg-word"></div>
+              <span id="tgTimer" class="tg-timer"></span>
+            </div>
+            <div class="tg-main">
+              <div class="tg-canvas-col">
+                <div class="tg-canvas-wrap">
+                  <canvas id="tgCanvas" width="800" height="600"></canvas>
+                  <div id="tgOverlay" class="tg-overlay"></div>
+                </div>
+                <div id="tgTools" class="tg-tools hidden">
+                  <div id="tgColors" class="tg-colors"></div>
+                  <div class="tool-group">
+                    <button class="btn small tg-size active" data-size="4">●</button>
+                    <button class="btn small tg-size" data-size="10" style="font-size:18px">●</button>
+                    <button class="btn small tg-size" data-size="24" style="font-size:24px">●</button>
+                  </div>
+                  <button id="tgEraser" class="btn small">🧽 Penghapus</button>
+                  <button id="tgClear" class="btn small">🗑️ Bersihkan</button>
+                </div>
+              </div>
+              <div class="tg-side">
+                <h4>Skor</h4>
+                <ol id="tgScores" class="tg-scores"></ol>
+                <div id="tgSetup" class="tg-setup">
+                  <label class="range-label">Ronde
+                    <select id="tgRounds">
+                      <option value="1">1</option><option value="2">2</option>
+                      <option value="3" selected>3</option><option value="5">5</option>
+                    </select>
+                  </label>
+                  <button id="tgStartBtn" class="btn primary block">▶️ Mulai</button>
+                </div>
+                <button id="tgStopBtn" class="btn danger block hidden">⏹️ Hentikan</button>
+                <p class="muted small-text">💬 Ketik tebakan di kotak chat. Makin cepat benar, makin besar poinnya!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Chat -->
+      <aside class="panel chat">
+        <h3>💬 Chat</h3>
+        <div id="chatLog" class="chat-log"></div>
+        <form id="chatForm" class="chat-form">
+          <input id="chatInput" maxlength="500" placeholder="Ketik pesan..." autocomplete="off" />
+          <button class="btn primary">Kirim</button>
+        </form>
+      </aside>
+    </div>
+  </section>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Konfigurasi deploy otomatis di Render (https://render.com)
+services:
+  - type: web
+    name: mabar-room
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
