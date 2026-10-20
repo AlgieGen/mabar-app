@@ -86,6 +86,7 @@ function enterRoom({ me, room }) {
   ctx.me = me;
   $('lobby').classList.add('hidden');
   $('room').classList.remove('hidden');
+  $('chatFab').classList.remove('hidden');
   $('roomTitle').textContent = room.name;
   $('roomCode').textContent = room.code;
   document.title = `${room.name} · MabarRoom`;
@@ -148,6 +149,26 @@ function addChat(msg) {
   if (atBottom || msg.from === ctx.me) log.scrollTop = log.scrollHeight;
 }
 socket.on('chat:msg', addChat);
+
+// Di layar HP, chat tampil sebagai panel yang dibuka lewat tombol mengambang
+const mobile = window.matchMedia('(max-width: 760px)');
+let unread = 0;
+function setChatOpen(open) {
+  $('chatPanel').classList.toggle('open', open);
+  if (open) {
+    unread = 0;
+    $('chatLog').scrollTop = $('chatLog').scrollHeight;
+  }
+  $('chatBadge').textContent = unread > 9 ? '9+' : unread;
+  $('chatBadge').classList.toggle('hidden', unread === 0);
+}
+$('chatFab').onclick = () => setChatOpen(!$('chatPanel').classList.contains('open'));
+$('chatCloseBtn').onclick = () => setChatOpen(false);
+socket.on('chat:msg', (msg) => {
+  if (!mobile.matches || $('chatPanel').classList.contains('open') || msg.from === ctx.me) return;
+  unread++;
+  setChatOpen(false);
+});
 $('chatForm').onsubmit = (e) => {
   e.preventDefault();
   const text = $('chatInput').value.trim();

@@ -133,6 +133,8 @@ export function initTebak(ctx) {
 
     const canGuess = st.phase === 'drawing' && !drawer && !guessed.has(ctx.me);
     $('chatInput').placeholder = canGuess ? '🎨 Ketik tebakanmu...' : 'Ketik pesan...';
+    $('tgGuessForm').classList.toggle('hidden', !canGuess);
+    if (st.phase !== 'drawing') $('tgFeedback').textContent = '';
   }
 
   function setState(s) {
@@ -152,6 +154,18 @@ export function initTebak(ctx) {
     el.textContent = `⏱️ ${sec}`;
     el.classList.toggle('low', sec <= 10);
   }, 250);
+
+  // ---------- Kotak tebakan di bawah gambar ----------
+  $('tgGuessForm').onsubmit = (e) => {
+    e.preventDefault();
+    const text = $('tgGuessInput').value.trim();
+    if (text) socket.emit('chat:send', text);
+    $('tgGuessInput').value = '';
+  };
+  // Pesan pribadi dari server (benar / hampir benar) juga ditampilkan di bawah gambar
+  socket.on('chat:msg', (msg) => {
+    if (msg.system && String(msg.id).startsWith('tg')) $('tgFeedback').textContent = msg.text;
+  });
 
   // ---------- Event dari server ----------
   socket.on('tebak:state', setState);

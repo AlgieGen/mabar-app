@@ -296,3 +296,59 @@ input[type="range"] { padding: 0; accent-color: var(--primary); }
   .chess-moves { width: 100%; }
   .chess-moves ol { max-height: 140px; }
 }
+
+/* ===== Chat mengambang & kotak tebakan ===== */
+.chat-head { display: flex; justify-content: space-between; align-items: center; }
+.chat-close { display: none; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 4px 12px; }
+.chat-fab { display: none; }
+.tg-guess { display: flex; gap: 6px; margin-top: 10px; }
+.tg-guess input { flex: 1; min-width: 0; }
+.tg-feedback { min-height: 1.2em; margin: 6px 0 0; font-size: 14px; }
+
+/* ===== Penyesuaian layar HP ===== */
+@media (max-width: 760px) {
+  body { font-size: 14px; }
+  .topbar { padding: 8px 12px; }
+  .topbar strong { font-size: 16px; }
+  .layout { padding: 8px; gap: 8px; padding-bottom: 80px; }
+  .panel { padding: 10px; }
+
+  /* Anggota sebagai chip horizontal, voice dalam satu baris */
+  .sidebar h3 { display: none; }
+  .members { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 8px; flex: none; padding-bottom: 2px; }
+  .members li { flex: none; padding: 3px 10px 3px 3px; background: var(--panel-2); border-radius: 99px; }
+  .members .m-name { max-width: 110px; }
+  .avatar { width: 26px; height: 26px; font-size: 12px; }
+  .voice-box { border-top: none; padding-top: 0; }
+  .voice-controls:not(.hidden) { display: flex; gap: 6px; }
+  .voice-box .btn.block { margin-top: 0; }
+  #audioUnlockBtn { margin-top: 6px; }
+
+  /* Chat menjadi panel dari bawah */
+  .chat {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 65vh; z-index: 20;
+    border-radius: 16px 16px 0 0;
+    transform: translateY(105%); transition: transform .25s ease, visibility .25s; visibility: hidden;
+  }
+  .chat.open { transform: none; visibility: visible; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+  #voiceError:empty { display: none; }
+  .chat-close { display: block; }
+  .chat-fab {
+    display: flex; align-items: center; justify-content: center; position: fixed; right: 16px; bottom: 16px; z-index: 19;
+    width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--primary); color: #fff; font-size: 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.45); cursor: pointer;
+  }
+  .chat-fab.hidden { display: none; }
+  .chat-badge {
+    position: absolute; top: -2px; right: -2px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 99px;
+    background: var(--danger); font-size: 12px; font-weight: 700; display: grid; place-items: center;
+  }
+  .toast { bottom: 84px; }
+
+  .tabs { gap: 2px; margin-bottom: 10px; }
+  .tab { padding: 7px 10px; }
+  .game-picker { gap: 6px; }
+  .game-picker .btn { padding: 7px 10px; font-size: 13px; }
+  .seat { min-width: 0; flex: 1; padding: 8px; font-size: 13px; }
+  .sq { width: min(40px, calc((100vw - 52px) / 8)); height: min(40px, calc((100vw - 52px) / 8)); }
+}

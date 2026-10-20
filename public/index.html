@@ -175,6 +175,11 @@
                   <canvas id="tgCanvas" width="800" height="600"></canvas>
                   <div id="tgOverlay" class="tg-overlay"></div>
                 </div>
+                <form id="tgGuessForm" class="tg-guess hidden">
+                  <input id="tgGuessInput" maxlength="60" placeholder="🎨 Ketik tebakanmu..." autocomplete="off" />
+                  <button class="btn primary">Tebak</button>
+                </form>
+                <p id="tgFeedback" class="tg-feedback"></p>
                 <div id="tgTools" class="tg-tools hidden">
                   <div id="tgColors" class="tg-colors"></div>
                   <div class="tool-group">
@@ -237,8 +242,11 @@
       </main>
 
       <!-- Chat -->
-      <aside class="panel chat">
-        <h3>💬 Chat</h3>
+      <aside id="chatPanel" class="panel chat">
+        <div class="chat-head">
+          <h3>💬 Chat</h3>
+          <button id="chatCloseBtn" class="chat-close" title="Tutup">✕</button>
+        </div>
         <div id="chatLog" class="chat-log"></div>
         <form id="chatForm" class="chat-form">
           <input id="chatInput" maxlength="500" placeholder="Ketik pesan..." autocomplete="off" />
@@ -248,6 +256,7 @@
     </div>
   </section>
 
+  <button id="chatFab" class="chat-fab hidden" title="Chat">💬<span id="chatBadge" class="chat-badge hidden"></span></button>
   <div id="toast" class="toast"></div>
 
   <script src="config.js"></script>
