@@ -1,0 +1,262 @@
+/* =====================================================================
+   Tema Pixel Art / Retro Arcade
+   Dimuat setelah style.css dan menimpa warna, font, sudut, dan bayangan.
+   Hapus <link> ke file ini di index.html untuk kembali ke tema lama.
+   ===================================================================== */
+
+:root {
+  --bg: #0d0221;
+  --panel: #1a0b3d;
+  --panel-2: #26125a;
+  --border: #5a2fd6;
+  --text: #f4f0ff;
+  --muted: #a99be0;
+  --primary: #ff2e88;
+  --primary-2: #ff5fa8;
+  --danger: #ff3b3b;
+  --ok: #39ff14;
+  --p0: #ff3b3b;
+  --p1: #ffe14d;
+  --cyan: #00e5ff;
+  --yellow: #ffe14d;
+  --ink: #000;
+  --radius: 0;
+  --pixel-font: 'Press Start 2P', monospace;
+  --text-font: 'VT323', ui-monospace, monospace;
+  --shadow: 6px 6px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+}
+
+/* Semua sudut tajam ala pixel */
+*, *::before, *::after { border-radius: 0 !important; }
+
+html { image-rendering: pixelated; }
+body {
+  font-family: var(--text-font);
+  font-size: 21px;
+  line-height: 1.15;
+  letter-spacing: .02em;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent 51%),
+    radial-gradient(2px 2px at 68% 12%, #fff6 50%, transparent 51%),
+    radial-gradient(2px 2px at 85% 64%, #fff5 50%, transparent 51%),
+    radial-gradient(2px 2px at 32% 82%, #fff6 50%, transparent 51%),
+    linear-gradient(rgba(90, 47, 214, .14) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(90, 47, 214, .14) 2px, transparent 2px);
+  background-size: auto, auto, auto, auto, 32px 32px, 32px 32px;
+  background-attachment: fixed;
+}
+
+/* Garis-garis layar CRT */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, .16) 2px 4px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, .35) 100%);
+}
+
+h1, h3, h4, .ww-phase, .tg-word, .topbar strong, .code-pill, .tab, .game-status, .uc-label, .ww-role-name, .uno-pname {
+  font-family: var(--pixel-font);
+  font-weight: normal;
+  letter-spacing: .04em;
+}
+h3 { font-size: 11px; color: var(--cyan); text-shadow: 2px 2px 0 var(--ink); }
+h4 { font-size: 11px; color: var(--yellow); margin-bottom: 10px; }
+.muted { color: var(--muted); }
+.small-text { font-size: 18px; }
+.error { color: var(--danger); text-shadow: 2px 2px 0 var(--ink); }
+
+/* Scrollbar pixel */
+* { scrollbar-width: thin; scrollbar-color: var(--border) var(--bg); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--bg); }
+
+/* ---------- Input ---------- */
+input, select, textarea {
+  font-family: var(--text-font);
+  font-size: 21px;
+  background: #0a0118;
+  border: 3px solid var(--border);
+  color: var(--text);
+  caret-color: var(--ok);
+  box-shadow: inset 3px 3px 0 rgba(0, 0, 0, .5);
+}
+input:focus, select:focus, textarea:focus { border-color: var(--cyan); }
+input::placeholder, textarea::placeholder { color: #7a6bb3; }
+input[type="checkbox"] { box-shadow: none; }
+
+/* ---------- Tombol 3D pixel ---------- */
+.btn {
+  font-family: var(--text-font);
+  font-size: 21px;
+  line-height: 1;
+  text-transform: uppercase;
+  background: #3a1f7a;
+  color: var(--text);
+  border: 3px solid var(--ink);
+  padding: 9px 14px 7px;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .4), inset 3px 3px 0 rgba(255, 255, 255, .22), var(--shadow-sm);
+  transition: transform .05s, filter .1s;
+}
+.btn:hover { border-color: var(--ink); filter: brightness(1.18); }
+.btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .4), inset 3px 3px 0 rgba(255, 255, 255, .22); }
+.btn.primary, .btn.active { background: var(--primary); border-color: var(--ink); color: #fff; }
+.btn.primary:hover { background: var(--primary); }
+.btn.danger { background: #5c0f1f; color: #ffb3b3; border-color: var(--ink); }
+.btn.small { font-size: 18px; padding: 6px 9px 4px; }
+.btn:disabled { filter: grayscale(.7) brightness(.7); }
+
+/* ---------- Lobby ---------- */
+.lobby-card {
+  background: var(--panel);
+  border: 4px solid var(--ink);
+  outline: 4px solid var(--border);
+  box-shadow: 12px 12px 0 var(--ink), 0 0 60px rgba(255, 46, 136, .25);
+  max-width: 660px;
+}
+.lobby-card h1 {
+  font-size: 30px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--primary), 6px 6px 0 var(--ink);
+  margin-bottom: 8px;
+}
+.lobby-card > .muted { text-align: center; }
+.press-start {
+  font-family: var(--pixel-font);
+  font-size: 12px;
+  text-align: center;
+  color: var(--cyan);
+  margin: 14px 0 0;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.lobby-card label { color: var(--cyan); }
+.lobby-box { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
+.lobby-box h3 { font-size: 10px; }
+.conn-status { font-size: 18px; }
+
+/* ---------- Kerangka room ---------- */
+.topbar {
+  background: #12052e;
+  border-bottom: 4px solid var(--ink);
+  box-shadow: 0 4px 0 var(--border);
+}
+.topbar strong { font-size: 14px; color: var(--yellow); text-shadow: 2px 2px 0 var(--primary); }
+.code-pill { font-size: 10px; background: #0a0118; border: 2px solid var(--border); padding: 6px 8px; }
+.code-pill b { color: var(--ok); }
+.panel {
+  background: var(--panel);
+  border: 3px solid var(--ink);
+  outline: 3px solid var(--border);
+  outline-offset: -6px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+/* Tab */
+.tabs { border-bottom: 3px solid var(--border); padding-bottom: 8px; }
+.tab { font-size: 10px; padding: 10px 12px; color: var(--muted); border: 3px solid transparent; }
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--primary); color: #fff; border-color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* Anggota */
+.members li { border: 2px solid transparent; }
+.members li.me { background: var(--panel-2); border-color: var(--border); }
+.avatar { border: 3px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); color: var(--ink); font-family: var(--pixel-font); font-size: 11px; }
+.members li.speaking .avatar { border-color: var(--ok); box-shadow: 0 0 0 3px var(--ink), 0 0 12px var(--ok); }
+.voice-box { border-top: 3px dashed var(--border); }
+
+/* Chat */
+.msg { background: var(--panel-2); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.msg.mine { background: #4a1450; border-color: var(--ink); }
+.msg .msg-name { font-family: var(--pixel-font); font-size: 9px; color: var(--cyan); margin-bottom: 4px; }
+.msg .msg-time { font-family: var(--text-font); font-size: 16px; }
+.msg.system { color: var(--yellow); font-size: 17px; border: none; box-shadow: none; background: none; }
+.toast { background: var(--panel-2); border: 3px solid var(--ink); outline: 3px solid var(--yellow); outline-offset: -6px; box-shadow: var(--shadow); font-size: 20px; }
+
+/* ---------- Planning & foto ---------- */
+.tasks li { background: var(--panel-2); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.t-meta { font-size: 17px; }
+.canvas-wrap, .tg-canvas-wrap, .yt-frame { border: 4px solid var(--ink); box-shadow: var(--shadow); }
+.filters, .tg-side, .chess-moves, .yt-queue, .ww-config, .ww-rules { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
+.range-label { font-size: 18px; }
+
+/* ---------- Game ---------- */
+.game-picker .btn { font-size: 19px; }
+.seat { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
+.seat.turn { border-color: var(--ok); box-shadow: 0 0 0 3px var(--ink), 0 0 14px var(--ok); }
+.vs { font-family: var(--pixel-font); font-size: 12px; color: var(--primary); }
+.game-status { font-size: 12px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); line-height: 1.6; }
+.cell { background: #0a0118; border: 3px solid var(--border); font-family: var(--pixel-font); font-size: 30px; }
+.cell.win { background: rgba(57, 255, 20, .2); border-color: var(--ok); }
+.board.c4 { background: #1d3bd6; border: 4px solid var(--ink); box-shadow: var(--shadow); }
+.board.c4 .cell { border-radius: 50% !important; border: 3px solid var(--ink); }
+.board.chess { border: 5px solid var(--ink); box-shadow: var(--shadow); }
+.sq.light { background: #c9b8ff; }
+.sq.dark { background: #6b48d6; }
+.sq.target::after, .sq.capture::after { border-radius: 50% !important; }
+.sq .rank, .sq .file { color: rgba(0, 0, 0, .55); font-family: var(--text-font); font-size: 14px; }
+.chess-moves ol { font-family: var(--text-font); font-size: 19px; }
+
+.tg-word { font-size: 18px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); }
+.tg-timer { font-family: var(--pixel-font); font-size: 13px; color: var(--cyan); }
+.tg-timer.low { color: var(--danger); animation: blink .5s steps(1) infinite; }
+.tg-overlay { background: rgba(13, 2, 33, .88); font-size: 22px; }
+.tg-overlay b { font-family: var(--pixel-font); font-size: 20px; color: var(--yellow); }
+.tg-color { border: 3px solid var(--ink); }
+.tg-color.active { box-shadow: 0 0 0 3px var(--yellow); }
+.tg-scores .pts { color: var(--yellow); }
+
+/* Werewolf & Undercover */
+.ww-phase { font-size: 14px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); line-height: 1.5; }
+.ww-event { background: #12052e; border: 3px solid var(--ink); border-left: 8px solid var(--yellow); box-shadow: var(--shadow-sm); }
+.ww-role, .uc-word { background: #2a0e5c; border: 3px solid var(--ink); outline: 3px solid var(--primary); outline-offset: -6px; box-shadow: var(--shadow); }
+.ww-role-name { font-size: 11px; color: var(--yellow); line-height: 1.6; }
+.uc-label { font-size: 9px; color: var(--cyan); }
+.uc-secret { font-family: var(--pixel-font); font-size: 22px; color: var(--yellow); text-shadow: 3px 3px 0 var(--primary); margin: 10px 0; }
+.ww-card { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
+.ww-card.me { outline: 3px solid var(--primary); outline-offset: -6px; }
+.ww-card.speaking-now { box-shadow: 0 0 0 3px var(--ok), var(--shadow-sm); }
+.ww-badge { border: 2px solid var(--ink); font-size: 16px; }
+.ww-pick { border: 3px solid var(--ink); background: #0a0118; }
+.ww-pick.on { background: #4a1450; border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--primary); }
+.uc-clues span { background: #0a0118; border: 2px solid var(--border); font-size: 18px; }
+.ww-witch { background: #12052e; border: 3px solid var(--ink); }
+
+/* UNO */
+.uno-player { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
+.uno-player.turn { border-color: var(--ok); box-shadow: 0 0 0 2px var(--ink), 0 0 12px var(--ok); }
+.uno-pname { font-size: 9px; line-height: 1.6; }
+.uno-count { font-size: 18px; }
+.uno-card { border: 4px solid var(--ink); box-shadow: inset 0 0 0 3px #fff, 4px 4px 0 var(--ink); font-family: var(--pixel-font); }
+.uno-center { font-size: 22px; text-shadow: 3px 3px 0 var(--ink); }
+.uno-corner { font-size: 9px; top: 6px; left: 7px; }
+.uno-card.back span { font-size: 9px; padding: 6px; border: 2px solid var(--ink); }
+.uno-card.playable { box-shadow: inset 0 0 0 3px #fff, 0 0 0 3px var(--ok), 4px 4px 0 var(--ink); }
+.uno-action { font-size: 20px; color: var(--cyan); }
+.uno-swatch { border: 4px solid var(--ink); box-shadow: var(--shadow-sm); }
+
+/* Tombol chat mengambang (HP) */
+.chat-fab { border: 3px solid var(--ink) !important; box-shadow: var(--shadow-sm) !important; }
+.chat-badge { border: 2px solid var(--ink); font-family: var(--pixel-font); font-size: 9px; }
+
+@media (max-width: 760px) {
+  body { font-size: 19px; }
+  .lobby-card h1 { font-size: 20px; }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; gap: 4px; }
+  .tab { font-size: 8px; padding: 8px 7px; flex-shrink: 0; letter-spacing: 0; }
+  .topbar strong { font-size: 11px; }
+  .panel { padding: 12px; outline-offset: -5px; }
+  .uc-secret { font-size: 17px; }
+  .cell { font-size: 24px; }
+  .uno-center { font-size: 17px; }
+  .ww-phase { font-size: 11px; }
+}
