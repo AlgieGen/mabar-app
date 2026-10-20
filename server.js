@@ -8,7 +8,9 @@ const { createTebak } = require('./tebak');
 const app = express();
 const server = http.createServer(app);
 // Gambar dikirim sebagai dataURL, jadi batas ukuran pesan dinaikkan.
-const io = new Server(server, { maxHttpBufferSize: 8e6 });
+// ALLOWED_ORIGINS: daftar domain tampilan (mis. https://mabar-app.vercel.app), dipisah koma. Kosong = semua boleh.
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim()) : '*';
+const io = new Server(server, { maxHttpBufferSize: 8e6, cors: { origin: allowedOrigins } });
 
 app.use(express.static(path.join(__dirname, 'public')));
 

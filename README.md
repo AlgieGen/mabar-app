@@ -21,15 +21,24 @@ npm start
 ```
 Buka http://localhost:3000
 
-## Main dengan teman
-Mikrofon di browser hanya boleh dipakai lewat **HTTPS** atau **localhost**. Jadi kalau teman membuka lewat `http://192.168.x.x:3000`, voice tidak akan jalan. Pilihan:
+## Deploy (Vercel + Render)
+Vercel tidak mendukung server yang terus menyala (dibutuhkan Socket.IO, game, dan voice), jadi deploy dibagi dua:
 
-1. **Tunnel (paling cepat, untuk coba-coba)**
-   ```bash
-   npx cloudflared tunnel --url http://localhost:3000
-   ```
-   Bagikan link `https://....trycloudflare.com` yang muncul.
-2. **Deploy** ke Render / Railway / Fly.io (gratis/murah, otomatis HTTPS). Perintah start: `npm start`.
+| Bagian | Hosting | Isi |
+|---|---|---|
+| Server realtime | **Render** | `server.js` (room, chat, game, signaling voice) |
+| Tampilan | **Vercel** | folder `public/` |
+
+1. **Render**: klik tombol *Deploy to Render* di atas → *Apply*. Catat alamatnya, mis. `https://mabar-room.onrender.com`.
+2. **Vercel**: *Add New → Project* → import repo ini. Di *Environment Variables* tambahkan
+   `MABAR_SERVER_URL` = alamat Render dari langkah 1 → *Deploy*.
+3. (Opsional, lebih aman) Di Render → *Environment*, tambahkan `ALLOWED_ORIGINS` = alamat Vercel-mu
+   (mis. `https://mabar-app.vercel.app`) supaya hanya tampilanmu yang boleh terhubung.
+
+Pengaturan build Vercel ada di `vercel.json`; `scripts/build-config.js` menulis alamat server ke `public/config.js`.
+
+Mikrofon hanya boleh dipakai lewat **HTTPS** atau **localhost**. Kedua hosting di atas sudah otomatis HTTPS.
+Untuk coba cepat tanpa deploy: `npx cloudflared tunnel --url http://localhost:3000`.
 
 ## Catatan teknis
 - Data room (chat, planning, foto, game papan) disimpan ke `data/rooms.json` setiap 10 detik, jadi tetap ada setelah server restart. Room kosong dihapus setelah 3 hari tidak aktif. Catatan: di hosting gratis seperti Render, disk akan direset saat deploy ulang.

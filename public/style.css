@@ -233,3 +233,6 @@ input[type="range"] { padding: 0; accent-color: var(--primary); }
   .tg-side { width: 100%; }
   .tg-word { font-size: 18px; }
 }
+
+.conn-status { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.conn-status.ok { color: var(--ok); }

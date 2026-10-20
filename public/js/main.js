@@ -6,7 +6,8 @@ import { initTebak } from './tebak.js';
 import { escapeHtml } from './util.js';
 
 const $ = (id) => document.getElementById(id);
-const socket = io();
+// Kosong = server di alamat yang sama. Di Vercel diisi alamat server Render (lihat config.js).
+const socket = io(window.MABAR_SERVER_URL || undefined);
 
 // Konteks bersama yang dipakai semua modul
 const ctx = {
@@ -149,6 +150,14 @@ $('chatForm').onsubmit = (e) => {
   if (text) socket.emit('chat:send', text);
   $('chatInput').value = '';
 };
+
+// Status koneksi di lobby. Server gratis yang sedang tidur butuh waktu untuk bangun.
+const conn = $('connStatus');
+const slowTimer = setTimeout(() => {
+  if (!socket.connected) conn.textContent = '⏳ Server sedang dibangunkan, biasanya butuh 30–60 detik...';
+}, 4000);
+socket.on('connect', () => { clearTimeout(slowTimer); conn.textContent = '🟢 Terhubung ke server'; conn.classList.add('ok'); });
+socket.on('disconnect', () => { conn.textContent = '🔴 Terputus, mencoba menyambung lagi...'; conn.classList.remove('ok'); });
 
 // Koneksi putus (mis. server restart / sinyal hilang): Socket.IO menyambung ulang sendiri,
 // lalu kita masuk lagi ke room yang sama.
