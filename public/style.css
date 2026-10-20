@@ -236,3 +236,63 @@ input[type="range"] { padding: 0; accent-color: var(--primary); }
 
 .conn-status { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 .conn-status.ok { color: var(--ok); }
+
+.m-status { font-size: 13px; }
+
+/* ===== Catur ===== */
+.board-row { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; margin-bottom: 16px; }
+.board-wrap { position: relative; }
+.board-row .board { margin: 0; }
+.board.chess { gap: 0; border: 3px solid #5a3e2b; border-radius: 6px; overflow: hidden; }
+.sq { position: relative; width: 56px; height: 56px; display: grid; place-items: center; cursor: pointer; user-select: none; }
+.sq.light { background: #eedab4; }
+.sq.dark { background: #b4865a; }
+.sq.last { box-shadow: inset 0 0 0 100px rgba(255, 230, 80, .38); }
+.sq.selected { box-shadow: inset 0 0 0 100px rgba(124, 92, 255, .5); }
+.sq.check { background: radial-gradient(circle, #ff4d6d 20%, transparent 75%); }
+.sq.target::after { content: ''; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(20, 20, 40, .35); }
+.sq.capture::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; border: 4px solid rgba(20, 20, 40, .35); }
+.sq .rank, .sq .file { position: absolute; font-size: 10px; font-weight: 700; color: rgba(60, 40, 20, .7); }
+.sq .rank { top: 2px; left: 3px; }
+.sq .file { bottom: 1px; right: 3px; }
+.pc { font-size: 42px; line-height: 1; font-family: "Segoe UI Symbol", "DejaVu Sans", "Noto Sans Symbols 2", serif; position: relative; z-index: 1; }
+.pc.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 1px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+.pc.b { color: #1b1b1b; text-shadow: 0 0 1px #fff8; }
+.chess-moves { width: 170px; background: var(--panel-2); border-radius: 10px; padding: 10px 12px; }
+.chess-moves h4 { margin-bottom: 6px; }
+.chess-moves ol { margin: 0; padding-left: 26px; max-height: 380px; overflow-y: auto; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+.chess-moves li span { margin-left: 10px; }
+.promo { position: absolute; inset: 0; background: rgba(15, 16, 32, .85); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; z-index: 2; }
+.promo .btn { width: 70px; height: 60px; padding: 0; }
+.promo .pc { font-size: 40px; }
+
+/* ===== Werewolf ===== */
+.ww-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ww-phase { font-size: 20px; font-weight: 700; }
+.ww-event { background: var(--panel-2); border-left: 4px solid var(--p1); padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; }
+.ww-role { display: flex; gap: 14px; align-items: center; background: linear-gradient(135deg, #2b2060, #24264a); border: 1px solid var(--primary); padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; }
+.ww-role-icon { font-size: 40px; }
+.ww-role-name { font-weight: 700; font-size: 17px; margin-bottom: 2px; }
+.ww-hint { color: var(--muted); min-height: 1.2em; }
+.ww-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.ww-card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.ww-card.me { border-color: var(--primary); }
+.ww-card.dead { opacity: .5; }
+.ww-name { font-weight: 600; }
+.ww-tags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 1px; }
+.ww-badge { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--border); }
+.ww-badge.werewolf { background: rgba(255, 77, 109, .3); }
+.ww-badge.safe { background: rgba(61, 220, 151, .25); }
+.ww-votes { font-size: 12px; font-weight: 700; color: var(--p1); }
+.ww-note { font-size: 12px; color: var(--muted); }
+.ww-setup { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.ww-rules { background: var(--panel-2); padding: 10px 14px; border-radius: 10px; width: 100%; }
+.ww-rules summary { cursor: pointer; font-weight: 600; }
+.ww-rules li { margin: 6px 0; }
+
+@media (max-width: 760px) {
+  .sq { width: 40px; height: 40px; }
+  .pc { font-size: 30px; }
+  .chess-moves { width: 100%; }
+  .chess-moves ol { max-height: 140px; }
+}

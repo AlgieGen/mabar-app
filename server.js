@@ -1,9 +1,14 @@
 const fs = require('fs');
+// Baca pengaturan dari file .env kalau ada (Node 20.12+)
+try { process.loadEnvFile(); } catch {}
 const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
 const { createTebak } = require('./tebak');
+const ice = require('./ice');
+const { createWerewolf } = require('./werewolf');
+const { Chess } = require('chess.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -15,7 +20,7 @@ const io = new Server(server, { maxHttpBufferSize: 8e6, cors: { origin: allowedO
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, 'data', 'rooms.json');
+const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data', 'rooms.json');
 const ROOM_TTL = 3 * 24 * 60 * 60 * 1000; // room kosong dihapus setelah 3 hari tidak aktif
 const rooms = new Map();
 let nextId = 1;
@@ -81,6 +86,7 @@ function cleanupRooms() {
   for (const r of rooms.values()) {
     if (r.members.size === 0 && Date.now() - r.lastActive > ROOM_TTL) {
       tebak.remove(r);
+      werewolf.remove(r);
       rooms.delete(r.code);
       dirty = true;
     }
@@ -110,7 +116,52 @@ const GAMES = {
   c4: { rows: 6, cols: 7, win: 4 },
 };
 
+// ---------- Catur ----------
+const DRAW_REASONS = [
+  ['isStalemate', 'Pat (stalemate)'],
+  ['isInsufficientMaterial', 'Bidak tidak cukup untuk skakmat'],
+  ['isThreefoldRepetition', 'Posisi berulang 3 kali'],
+  ['isDraw', 'Aturan 50 langkah'],
+];
+
+function loadChess(g) {
+  const c = new Chess();
+  if (g.pgn) c.loadPgn(g.pgn);
+  return c;
+}
+
+// Salin posisi papan dari objek Chess ke state yang dikirim ke klien
+function syncChess(g, c) {
+  g.pgn = c.pgn();
+  g.fen = c.fen();
+  g.turn = c.turn() === 'w' ? 0 : 1;
+  g.check = c.inCheck();
+  g.history = c.history();
+  g.moves = c.moves({ verbose: true }).map((m) => m.from + m.to + (m.promotion || ''));
+  return g;
+}
+
+function newChess(players) {
+  return syncChess({ type: 'chess', players, winner: null, draw: false, reason: '', lastMove: null }, new Chess());
+}
+
+function chessMove(g, { from, to, promotion } = {}) {
+  const c = loadChess(g);
+  let m;
+  try { m = c.move({ from, to, promotion: promotion || 'q' }); } catch { return false; }
+  const mover = g.turn;
+  g.lastMove = [m.from, m.to];
+  if (c.isCheckmate()) { g.winner = mover; g.reason = 'Skakmat'; }
+  else {
+    const draw = DRAW_REASONS.find(([fn]) => c[fn]());
+    if (draw) { g.draw = true; g.reason = draw[1]; }
+  }
+  syncChess(g, c);
+  return true;
+}
+
 function newGame(type, players = [null, null]) {
+  if (type === 'chess') return newChess(players);
   const g = GAMES[type];
   return { type, rows: g.rows, cols: g.cols, board: Array(g.rows * g.cols).fill(null), players, turn: 0, winner: null, line: null, draw: false };
 }
@@ -134,6 +185,7 @@ function checkWinner(game, idx) {
 }
 
 const tebak = createTebak(io, systemMessage);
+const werewolf = createWerewolf(io, systemMessage);
 
 io.on('connection', (socket) => {
   const room = () => rooms.get(socket.data.code);
@@ -145,6 +197,7 @@ io.on('connection', (socket) => {
     if (r) r.lastActive = Date.now();
   });
   tebak.register(socket, room);
+  werewolf.register(socket, room);
 
   // ---------- Room ----------
   socket.on('room:create', ({ roomName } = {}, cb) => {
@@ -166,6 +219,7 @@ io.on('connection', (socket) => {
       room: { code: r.code, name: r.name, chat: r.chat, plan: r.plan, photo: r.photo, game: r.game, tebak: tebak.publicState(r), members: membersList(r) },
     });
     tebak.onJoin(r, socket.id, name);
+    werewolf.onJoin(r, socket.id);
     io.to(r.code).emit('members', membersList(r));
     systemMessage(r, `${name} bergabung ke room`);
   });
@@ -251,7 +305,7 @@ io.on('connection', (socket) => {
   const emitGame = (r) => io.to(r.code).emit('game:state', r.game);
 
   socket.on('game:new', (type) => {
-    const r = room(); if (!r || !GAMES[type]) return;
+    const r = room(); if (!r || !(GAMES[type] || type === 'chess')) return;
     const players = r.game ? r.game.players : [null, null];
     r.game = newGame(type, players);
     emitGame(r);
@@ -270,6 +324,10 @@ io.on('connection', (socket) => {
   socket.on('game:move', (index) => {
     const r = room(); const g = r?.game; if (!g || g.winner !== null || g.draw) return;
     if (g.players[g.turn] !== socket.id || !g.players.every(Boolean)) return;
+    if (g.type === 'chess') {
+      if (chessMove(g, index)) emitGame(r);
+      return;
+    }
     let idx = index;
     if (g.type === 'c4') {
       // index = kolom; bidak jatuh ke baris kosong paling bawah
@@ -289,8 +347,23 @@ io.on('connection', (socket) => {
     else g.turn = 1 - g.turn;
     emitGame(r);
   });
+  socket.on('game:resign', () => {
+    const r = room(); const g = r?.game; if (!g || g.winner !== null || g.draw) return;
+    const seat = g.players.indexOf(socket.id);
+    if (seat === -1 || !g.players.every(Boolean)) return;
+    g.winner = 1 - seat;
+    g.reason = 'Lawan menyerah';
+    emitGame(r);
+    systemMessage(r, `🏳️ ${r.members.get(socket.id).name} menyerah`);
+  });
   socket.on('game:reset', () => {
     const r = room(); if (!r?.game) return;
+    if (r.game.type === 'chess') {
+      // Tukar warna setiap permainan baru
+      r.game = newChess([r.game.players[1], r.game.players[0]]);
+      emitGame(r);
+      return;
+    }
     const starter = r.game.winner === null ? 0 : 1 - r.game.winner; // yang kalah jalan duluan
     r.game = newGame(r.game.type, r.game.players);
     r.game.turn = starter;
@@ -298,6 +371,7 @@ io.on('connection', (socket) => {
   });
 
   // ---------- Voice (signaling WebRTC) ----------
+  socket.on('voice:ice', async (_, cb) => cb?.(await ice.getIceServers()));
   socket.on('voice:join', (_, cb) => {
     const r = room(); if (!r) return;
     const others = membersList(r).filter((m) => m.inVoice && m.id !== socket.id).map((m) => m.id);
@@ -338,6 +412,7 @@ io.on('connection', (socket) => {
       emitGame(r);
     }
     tebak.onLeave(r, socket.id);
+    werewolf.onLeave(r, socket.id);
     if (r.members.size === 0) return;
     io.to(r.code).emit('members', membersList(r));
     systemMessage(r, `${m.name} keluar dari room`);
@@ -346,4 +421,5 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`MabarRoom berjalan di http://localhost:${PORT}`);
+  console.log(`Voice: ${ice.describe()}`);
 });

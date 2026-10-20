@@ -11,6 +11,8 @@ Website untuk kumpul bareng teman secara online: bikin room, planning, edit foto
 - **Planning** — daftar rencana (tanggal, ditugaskan ke siapa, centang selesai) + catatan bersama.
 - **Edit foto bareng** — upload foto, coret pena/penghapus, tambah teks, filter (kecerahan, kontras, saturasi, hitam-putih, sepia, hue, blur), undo, download. Semua tersinkron ke semua orang di room.
 - **Game papan** — Tic-Tac-Toe dan Connect 4 (2 pemain, sisanya menonton).
+- **♟️ Catur** — aturan lengkap (skakmat, remis, rokade, en passant, promosi), papan dibalik untuk hitam, riwayat langkah, menyerah.
+- **🐺 Werewolf** — 4+ pemain dengan peran Werewolf, Peramal, Dokter, Warga; fase malam & voting siang. Paling seru sambil voice!
 - **🎨 Tebak Gambar** — bergiliran menggambar, yang lain menebak lewat chat. Ada timer 80 detik, petunjuk huruf, poin (makin cepat makin besar), dan papan skor. Daftar kata bisa ditambah di `words.js`.
 - **Sambung ulang otomatis** kalau koneksi putus.
 
@@ -52,6 +54,11 @@ Pengaturan build Vercel ada di `vercel.json`; `scripts/build-config.js` menulis 
 Mikrofon hanya boleh dipakai lewat **HTTPS** atau **localhost**. Kedua hosting di atas sudah otomatis HTTPS.
 Untuk coba cepat tanpa deploy: `npx cloudflared tunnel --url http://localhost:3000`.
 
+## Voice tidak terdengar? Pasang TURN
+Kalau pemain memakai data seluler atau WiFi kantor/kos, koneksi suara langsung sering gagal (ikon ⚠️ di daftar anggota).
+Solusinya server TURN gratis. Salin `.env.example` menjadi `.env`, isi salah satu pilihan (mis. Cloudflare Realtime TURN, gratis 1.000 GB/bulan), lalu restart server.
+Saat start, server menulis `Voice: TURN aktif (...)` kalau berhasil.
+
 ## Catatan teknis
 - Data room (chat, planning, foto, game papan) disimpan ke `data/rooms.json` setiap 10 detik, jadi tetap ada setelah server restart. Room kosong dihapus setelah 3 hari tidak aktif. Catatan: di hosting gratis seperti Render, disk akan direset saat deploy ulang.
 - Voice memakai mesh P2P, cocok untuk ±2–6 orang. Kalau ada teman di jaringan ketat (mis. sebagian jaringan seluler/kantor) yang tidak bisa tersambung, tambahkan server TURN di `ICE_SERVERS` pada `public/js/voice.js`.
@@ -60,6 +67,8 @@ Untuk coba cepat tanpa deploy: `npx cloudflared tunnel --url http://localhost:30
 ```
 server.js            Server Express + Socket.IO (room, sinkronisasi, signaling voice, penyimpanan)
 tebak.js             Logika game Tebak Gambar
+werewolf.js          Logika game Werewolf
+ice.js               Server STUN/TURN untuk voice
 words.js             Daftar kata Tebak Gambar
 public/index.html    Tampilan
 public/style.css
@@ -67,6 +76,7 @@ public/js/main.js     Lobby, room, anggota, chat
 public/js/voice.js    Voice chat WebRTC
 public/js/planning.js
 public/js/photo.js
-public/js/game.js       Tic-Tac-Toe & Connect 4
+public/js/game.js       Tic-Tac-Toe, Connect 4 & Catur
+public/js/werewolf.js   Werewolf
 public/js/tebak.js      Tebak Gambar
 ```

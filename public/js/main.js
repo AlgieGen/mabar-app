@@ -3,6 +3,7 @@ import { initPlanning } from './planning.js';
 import { initPhoto } from './photo.js';
 import { initGame } from './game.js';
 import { initTebak } from './tebak.js';
+import { initWerewolf } from './werewolf.js';
 import { escapeHtml } from './util.js';
 
 const $ = (id) => document.getElementById(id);
@@ -24,6 +25,7 @@ const planning = initPlanning(ctx);
 const photo = initPhoto(ctx);
 const game = initGame(ctx);
 const tebak = initTebak(ctx);
+const werewolf = initWerewolf(ctx);
 
 // ---------- Utilitas ----------
 let toastTimer;
@@ -96,6 +98,7 @@ function enterRoom({ me, room }) {
   photo.load(room.photo);
   game.load(room.game);
   tebak.load(room.tebak);
+  werewolf.reset();
 }
 
 $('copyLinkBtn').onclick = async () => {
@@ -106,13 +109,13 @@ $('copyLinkBtn').onclick = async () => {
 $('leaveRoomBtn').onclick = () => { voice.leave(); location.href = '/'; };
 
 // ---------- Tabs ----------
-document.querySelectorAll('.tab').forEach((btn) => {
-  btn.onclick = () => {
-    document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.tab-body').forEach((b) => b.classList.toggle('hidden', b.id !== `tab-${btn.dataset.tab}`));
-    if (btn.dataset.tab === 'photo') photo.redraw();
-  };
-});
+function openTab(name) {
+  document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-body').forEach((b) => b.classList.toggle('hidden', b.id !== `tab-${name}`));
+  if (name === 'photo') photo.redraw();
+}
+ctx.openTab = openTab;
+document.querySelectorAll('.tab').forEach((btn) => { btn.onclick = () => openTab(btn.dataset.tab); });
 
 // ---------- Anggota ----------
 function setMembers(list) {
@@ -121,6 +124,7 @@ function setMembers(list) {
     <li data-id="${m.id}" class="${m.id === ctx.me ? 'me' : ''}">
       <span class="avatar" style="background:${colorFor(m.id)}">${escapeHtml(m.name[0].toUpperCase())}</span>
       <span class="m-name">${escapeHtml(m.name)}${m.id === ctx.me ? ' (kamu)' : ''}</span>
+      <span class="m-status"></span>
       <span class="m-icons">${m.inVoice ? (m.muted ? '🔇' : '🎙️') : ''}</span>
     </li>`).join('');
   ctx.memberListeners.forEach((fn) => fn(list));

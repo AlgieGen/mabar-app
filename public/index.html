@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MabarRoom</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -60,6 +61,7 @@
             <button id="muteBtn" class="btn block">🔇 Mute</button>
             <button id="voiceLeaveBtn" class="btn danger block">Keluar Voice</button>
           </div>
+          <button id="audioUnlockBtn" class="btn primary block hidden">🔊 Klik untuk mengaktifkan suara</button>
           <p id="voiceError" class="error small-text"></p>
         </div>
       </aside>
@@ -132,7 +134,9 @@
           <div class="game-picker">
             <button class="btn" data-game="ttt">❌⭕ Tic-Tac-Toe</button>
             <button class="btn" data-game="c4">🔴🟡 Connect 4</button>
+            <button class="btn" data-game="chess">♟️ Catur</button>
             <button class="btn" data-game="tebak">🎨 Tebak Gambar</button>
+            <button class="btn" data-game="werewolf">🐺 Werewolf</button>
           </div>
           <div id="boardView">
           <div id="gameArea" class="hidden">
@@ -142,8 +146,15 @@
               <div class="seat" data-seat="1"></div>
             </div>
             <p id="gameStatus" class="game-status"></p>
-            <div id="board" class="board"></div>
+            <div class="board-row">
+              <div class="board-wrap">
+                <div id="board" class="board"></div>
+                <div id="promoPicker" class="promo hidden"></div>
+              </div>
+              <div id="chessMoves" class="chess-moves hidden"></div>
+            </div>
             <div class="game-actions">
+              <button id="resignBtn" class="btn danger hidden">🏳️ Menyerah</button>
               <button id="gameResetBtn" class="btn">🔄 Main lagi</button>
               <button id="standBtn" class="btn">Berdiri dari kursi</button>
             </div>
@@ -190,6 +201,36 @@
                 <button id="tgStopBtn" class="btn danger block hidden">⏹️ Hentikan</button>
                 <p class="muted small-text">💬 Ketik tebakan di kotak chat. Makin cepat benar, makin besar poinnya!</p>
               </div>
+            </div>
+          </div>
+
+          <!-- Werewolf -->
+          <div id="wwView" class="hidden">
+            <div class="ww-top">
+              <span id="wwPhase" class="ww-phase"></span>
+              <span id="wwTimer" class="tg-timer"></span>
+            </div>
+            <div id="wwEvent" class="ww-event hidden"></div>
+            <div id="wwRole" class="ww-role hidden"></div>
+            <p id="wwHint" class="ww-hint"></p>
+            <div id="wwPlayers" class="ww-players"></div>
+            <div class="game-actions">
+              <button id="wwSkipBtn" class="btn hidden">🤷 Lewati (tidak vote)</button>
+              <button id="wwStopBtn" class="btn danger hidden">⏹️ Hentikan</button>
+            </div>
+            <div id="wwSetup" class="ww-setup">
+              <button id="wwStartBtn" class="btn primary">🐺 Mulai Werewolf</button>
+              <details class="ww-rules">
+                <summary>📖 Cara bermain</summary>
+                <ul>
+                  <li><b>🐺 Werewolf</b> — setiap malam memilih satu korban. Menang kalau jumlahnya sama dengan sisa warga.</li>
+                  <li><b>🔮 Peramal</b> — setiap malam menerawang satu orang: werewolf atau bukan.</li>
+                  <li><b>💉 Dokter</b> — setiap malam melindungi satu orang (tidak boleh orang yang sama 2 malam berturut-turut).</li>
+                  <li><b>🧑‍🌾 Warga</b> — diskusi lewat voice, cari werewolf, lalu vote di siang hari.</li>
+                  <li>Minimal 4 pemain. 8+ pemain: 2 werewolf, 12+: 3 werewolf.</li>
+                  <li>Pemain yang sudah mati sebaiknya diam ya 🤫</li>
+                </ul>
+              </details>
             </div>
           </div>
         </div>

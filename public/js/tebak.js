@@ -164,9 +164,8 @@ export function initTebak(ctx) {
   socket.on('tebak:clear', () => { if (st) st.strokes = []; clearCanvas(); });
   socket.on('tebak:started', () => {
     ctx.showGameView('tebak');
-    if (!document.querySelector('.tab[data-tab="game"]').classList.contains('active')) {
-      ctx.toast('🎨 Tebak Gambar dimulai! Buka tab Game');
-    }
+    ctx.openTab('game');
+    ctx.toast('🎨 Tebak Gambar dimulai!');
   });
   ctx.memberListeners.push(() => render());
 
