@@ -9,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="theme-retro.css" />
+  <link id="retroCss" rel="stylesheet" href="theme-retro.css" />
+  <link rel="stylesheet" href="themes.css" />
 </head>
 <body>
   <!-- ===== LOBBY ===== -->
@@ -48,6 +49,7 @@
         <span class="code-pill">Kode: <b id="roomCode">-----</b></span>
       </div>
       <div class="topbar-actions">
+        <button id="meChip" class="me-chip hidden" title="Profil saya"></button>
         <button id="sfxBtn" class="btn small">🔊 SFX</button>
         <button id="copyLinkBtn" class="btn small">🔗 Salin link undangan</button>
         <button id="leaveRoomBtn" class="btn small danger">Keluar</button>
@@ -79,6 +81,7 @@
           <button class="tab" data-tab="photo">🖼️ Edit Foto</button>
           <button class="tab" data-tab="watch">📺 Nonton</button>
           <button class="tab" data-tab="game">🕹️ Game</button>
+          <button class="tab" data-tab="profile">👾 Profil</button>
         </nav>
 
         <!-- Planning -->
@@ -160,6 +163,78 @@
               <h4>Antrean</h4>
               <ol id="ytQueue"></ol>
             </div>
+          </div>
+        </div>
+
+        <!-- Profil, toko, peringkat -->
+        <div id="tab-profile" class="tab-body hidden">
+          <nav class="subtabs">
+            <button class="subtab active" data-sub="me">👾 Profil</button>
+            <button class="subtab" data-sub="shop">🛒 Toko</button>
+            <button class="subtab" data-sub="rank">🏆 Peringkat</button>
+          </nav>
+
+          <div id="sub-me" class="sub-body">
+            <div class="pf-grid">
+              <div class="pf-card">
+                <div id="pfAvatar" class="pf-avatar"></div>
+                <input id="pfName" maxlength="24" title="Ganti nama" />
+                <div class="pf-level">
+                  <span id="pfLevel"></span>
+                  <div class="xp-bar"><div id="pfXpFill"></div></div>
+                  <small id="pfXpText"></small>
+                </div>
+                <div class="pf-points">🪙 <b id="pfPoints">0</b> poin</div>
+                <div id="pfStats" class="pf-stats"></div>
+              </div>
+              <div class="pf-editor">
+                <h4>🎨 Gambar avatar</h4>
+                <div id="avGrid" class="av-grid"></div>
+                <div id="avPalette" class="av-palette"></div>
+                <div class="av-actions">
+                  <button id="avRandom" class="btn small">🎲 Acak</button>
+                  <button id="avClear" class="btn small">🧽 Kosongkan</button>
+                  <button id="avSave" class="btn small primary">💾 Simpan</button>
+                </div>
+              </div>
+            </div>
+            <h4>🎽 Sedang dipakai</h4>
+            <div id="pfEquip" class="pf-equip"></div>
+            <h4>🏅 Lencana <span id="pfBadgeCount"></span></h4>
+            <div id="pfBadges" class="pf-badges"></div>
+            <details class="ww-rules">
+              <summary>🔑 Kode akun & pindah perangkat</summary>
+              <p class="small-text">Profilmu (level, poin, item) tersimpan di browser ini. Simpan kode di bawah untuk masuk dari HP/PC lain. <b>Jangan bagikan ke orang lain!</b></p>
+              <div class="pf-code-row"><code id="pfCode"></code><button id="pfCopyCode" class="btn small">📋 Salin</button></div>
+              <form id="pfLoginForm" class="tg-guess">
+                <input id="pfLoginCode" placeholder="Tempel kode akun, mis. MBR-XXXX-..." autocomplete="off" />
+                <button class="btn">Masuk</button>
+              </form>
+            </details>
+            <details class="ww-rules">
+              <summary>❓ Cara dapat XP & poin</summary>
+              <ul>
+                <li>🏆 Menang: <b>+40 XP, +25 🪙</b></li>
+                <li>🤝 Seri: <b>+25 XP, +12 🪙</b></li>
+                <li>🎮 Kalah / ikut main: <b>+15 XP, +5 🪙</b></li>
+                <li>⬆️ Setiap naik level: bonus <b>+50 🪙</b></li>
+                <li>Berlaku untuk semua game (Tebak Gambar: juara = menang). Game yang dihentikan di tengah jalan tidak memberi hadiah.</li>
+                <li>Belanjakan poin di 🛒 Toko untuk bingkai, aksesori avatar, dan tema website.</li>
+              </ul>
+            </details>
+          </div>
+
+          <div id="sub-shop" class="sub-body hidden">
+            <p class="shop-head">🪙 Poinmu: <b id="shopPoints">0</b> <span class="muted small-text">· Tema hanya mengubah tampilan untukmu sendiri</span></p>
+            <div id="shopList"></div>
+          </div>
+
+          <div id="sub-rank" class="sub-body hidden">
+            <div class="rank-sort">
+              <button class="btn small active" data-sort="xp">⭐ XP</button>
+              <button class="btn small" data-sort="wins">🏆 Menang</button>
+            </div>
+            <ol id="rankList" class="rank-list"></ol>
           </div>
         </div>
 
@@ -386,6 +461,7 @@
 
   <button id="chatFab" class="chat-fab hidden" title="Chat">💬<span id="chatBadge" class="chat-badge hidden"></span></button>
   <div id="toast" class="toast"></div>
+  <div id="rewardPop" class="reward-pop"></div>
 
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.8.4/dist/socket.io.min.js"></script>

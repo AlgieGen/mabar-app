@@ -1,0 +1,179 @@
+/* =====================================================================
+   Tema pribadi (dibeli di toko) + gaya avatar, profil, toko, peringkat.
+   Tema dipilih lewat <html data-theme="...">. "retro" = tema dasar di
+   theme-retro.css; "modern" mematikan theme-retro.css (tampilan awal).
+   ===================================================================== */
+
+:root[data-theme="gameboy"] {
+  --bg: #0f380f; --panel: #306230; --panel-2: #255225; --border: #8bac0f;
+  --text: #e0f8cf; --muted: #9bbc0f; --primary: #9bbc0f; --primary-2: #b4d23a; --on-primary: #0f380f;
+  --danger: #e0f8cf; --ok: #9bbc0f; --p0: #e0f8cf; --p1: #0f380f; --cyan: #9bbc0f; --yellow: #e0f8cf; --ink: #071c07;
+  --input-bg: #0f380f; --deep: #0f380f; --btn-bg: #306230; --mine-bg: #3e6b1a; --card-hi: #255225;
+  --grid: rgba(155, 188, 15, .08); --danger-bg: #0f380f; --danger-text: #e0f8cf;
+  --sq-light: #9bbc0f; --sq-dark: #306230; --placeholder: #6a8f2a; --overlay: rgba(15, 56, 15, .9);
+}
+:root[data-theme="candy"] {
+  --bg: #ffe3f1; --panel: #fff5fa; --panel-2: #ffe0ef; --border: #ff8fc7;
+  --text: #4a1942; --muted: #a35d7f; --primary: #ff4fa3; --primary-2: #ff7ab9; --on-primary: #fff;
+  --danger: #e5383b; --ok: #1aa260; --p0: #e5383b; --p1: #e08a00; --cyan: #2a9fd6; --yellow: #e08a00; --ink: #4a1942;
+  --input-bg: #fff; --deep: #ffd0e8; --btn-bg: #ffc2e0; --mine-bg: #ffd6ea; --card-hi: #ffd0e8;
+  --grid: rgba(255, 79, 163, .12); --danger-bg: #ffd6d6; --danger-text: #b3001b;
+  --sq-light: #ffe0ef; --sq-dark: #ff8fc7; --placeholder: #c48aa8; --scan: rgba(74, 25, 66, .05); --overlay: rgba(255, 227, 241, .92);
+}
+:root[data-theme="synthwave"] {
+  --bg: #1a0933; --panel: #2d1155; --panel-2: #3b1670; --border: #f72585;
+  --text: #fff; --muted: #c9a7eb; --primary: #ff6c11; --primary-2: #ff8c42; --on-primary: #1a0933;
+  --danger: #ff4d6d; --ok: #72efdd; --p0: #f72585; --p1: #ffd60a; --cyan: #4cc9f0; --yellow: #ffd60a;
+  --input-bg: #12052b; --deep: #24093f; --btn-bg: #5a189a; --mine-bg: #6a1b7a; --card-hi: #3c096c;
+  --grid: rgba(247, 37, 133, .15); --sq-light: #f9c6e0; --sq-dark: #b5179e; --placeholder: #9d7cc4;
+}
+:root[data-theme="matrix"] {
+  --bg: #000; --panel: #021202; --panel-2: #052905; --border: #00ff41;
+  --text: #b8ffc8; --muted: #3fbf5f; --primary: #00ff41; --primary-2: #5cff85; --on-primary: #000;
+  --danger: #ff3b3b; --ok: #00ff41; --p0: #00ff41; --p1: #d6ff3d; --cyan: #00ff41; --yellow: #d6ff3d;
+  --input-bg: #000; --deep: #010a01; --btn-bg: #0a3a0a; --mine-bg: #0b3d16; --card-hi: #052905;
+  --grid: rgba(0, 255, 65, .07); --sq-light: #8fffa8; --sq-dark: #0a6b1f; --placeholder: #2a7a3d; --overlay: rgba(0, 0, 0, .9);
+}
+:root[data-theme="sakura"] {
+  --bg: #2a1b2e; --panel: #3a2540; --panel-2: #4a2f52; --border: #ffb7c5;
+  --text: #fff4f6; --muted: #d9b3c4; --primary: #ffb7c5; --primary-2: #ffd0da; --on-primary: #2a1b2e;
+  --danger: #ff6b81; --ok: #9ad1a6; --p0: #ff6b81; --p1: #f6e3ba; --cyan: #9ad1a6; --yellow: #f6e3ba;
+  --input-bg: #1f1322; --deep: #22152a; --btn-bg: #5c3a66; --mine-bg: #6b3a5c; --card-hi: #4a2f52;
+  --grid: rgba(255, 183, 197, .08); --sq-light: #ffe4ea; --sq-dark: #c98fa5; --placeholder: #a07f8f;
+}
+:root[data-theme="candy"] .lobby-card h1 { text-shadow: 3px 3px 0 var(--primary), 6px 6px 0 var(--ink); }
+
+/* ---------- Avatar pixel ---------- */
+.av {
+  position: relative; display: inline-grid; place-items: center; flex-shrink: 0;
+  width: var(--av); height: var(--av); vertical-align: middle;
+  background: var(--input-bg, #0a0118); border: 2px solid var(--ink, #000);
+}
+.av svg { width: 100%; height: 100%; display: block; }
+.av-empty { background: var(--panel-2); color: var(--text); font-weight: 700; font-size: calc(var(--av) * .45); }
+.av-lv {
+  position: absolute; right: -7px; bottom: -7px; padding: 2px 3px 1px; line-height: 1;
+  font-family: var(--pixel-font, inherit); font-size: 8px; color: #000;
+  background: var(--yellow, #ffd23f); border: 2px solid #000;
+}
+.members li.speaking .av { box-shadow: 0 0 0 3px var(--ok), 0 0 12px var(--ok); animation: none; }
+.msg-name .av { margin-right: 6px; border-width: 1px; }
+
+/* Bingkai avatar dari toko */
+.b-bronze { box-shadow: 0 0 0 3px #cd7f32, 0 0 0 5px #000; }
+.b-silver { box-shadow: 0 0 0 3px #d9d9d9, 0 0 0 5px #000; }
+.b-gold { box-shadow: 0 0 0 3px #ffd700, 0 0 0 5px #000, 0 0 12px #ffd700; }
+.b-neon { animation: b-neon 1.2s steps(1) infinite; }
+.b-fire { animation: b-fire .45s steps(1) infinite; }
+.b-rainbow { animation: b-rainbow 1.8s steps(1) infinite; }
+.b-diamond { box-shadow: 0 0 0 3px #b9f2ff, 0 0 0 5px #fff, 0 0 0 7px #000, 0 0 18px #b9f2ff; animation: b-diamond 2s ease-in-out infinite; }
+@keyframes b-neon { 0% { box-shadow: 0 0 0 3px #ff2e88, 0 0 14px #ff2e88; } 50% { box-shadow: 0 0 0 3px #00e5ff, 0 0 14px #00e5ff; } }
+@keyframes b-fire {
+  0% { box-shadow: 0 0 0 3px #ff4500, 0 -4px 10px #ff4500; }
+  33% { box-shadow: 0 0 0 3px #ffa500, 0 -6px 14px #ffa500; }
+  66% { box-shadow: 0 0 0 3px #ffd700, 0 -3px 10px #ff6a00; }
+}
+@keyframes b-rainbow {
+  0% { box-shadow: 0 0 0 3px #ff004d, 0 0 0 5px #000; } 17% { box-shadow: 0 0 0 3px #ffa300, 0 0 0 5px #000; }
+  33% { box-shadow: 0 0 0 3px #ffec27, 0 0 0 5px #000; } 50% { box-shadow: 0 0 0 3px #00e436, 0 0 0 5px #000; }
+  67% { box-shadow: 0 0 0 3px #29adff, 0 0 0 5px #000; } 83% { box-shadow: 0 0 0 3px #a855f7, 0 0 0 5px #000; }
+}
+@keyframes b-diamond { 50% { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #b9f2ff, 0 0 0 7px #000, 0 0 26px #e0fbff; } }
+
+/* ---------- Chip profil di bar atas ---------- */
+.me-chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; cursor: pointer;
+  background: var(--panel-2); color: var(--text); border: 2px solid var(--border); font: inherit; font-size: 18px;
+}
+.me-chip:hover { border-color: var(--primary); }
+.me-points { color: var(--yellow); }
+
+/* ---------- Halaman profil ---------- */
+.subtabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.subtab { background: transparent; border: 2px solid var(--border); color: var(--muted); padding: 7px 12px; cursor: pointer; font: inherit; }
+.subtab.active { background: var(--primary); color: var(--on-primary, #fff); border-color: var(--ink, #000); }
+.pf-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; margin-bottom: 14px; }
+.pf-card { background: var(--panel-2); border: 3px solid var(--ink, #000); padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.pf-avatar { padding: 10px; }
+.pf-card #pfName { text-align: center; width: 100%; }
+.pf-level { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+.pf-level span { font-family: var(--pixel-font, inherit); font-size: 12px; color: var(--yellow); }
+.xp-bar { height: 16px; background: var(--input-bg, #000); border: 2px solid var(--ink, #000); }
+.xp-bar div { height: 100%; width: 0; background: repeating-linear-gradient(90deg, var(--ok) 0 8px, color-mix(in srgb, var(--ok) 70%, #000) 8px 10px); transition: width .6s steps(10); }
+.pf-level small { color: var(--muted); font-size: 16px; }
+.pf-points { font-size: 22px; } .pf-points b { color: var(--yellow); }
+.pf-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+.pf-stats div { background: var(--input-bg); border: 2px solid var(--border); padding: 6px 2px; display: flex; flex-direction: column; }
+.pf-stats b { font-size: 22px; color: var(--cyan); } .pf-stats span { font-size: 14px; color: var(--muted); }
+.pf-stats p { grid-column: 1 / -1; margin: 4px 0 0; }
+.pf-editor { background: var(--panel-2); border: 3px solid var(--ink, #000); padding: 14px; }
+.av-grid { display: grid; grid-template-columns: repeat(8, 1fr); width: min(100%, 288px); aspect-ratio: 1; border: 3px solid var(--ink, #000); touch-action: none;
+  background: repeating-conic-gradient(#2a2a3a 0 25%, #1c1c28 0 50%) 0 0 / 25% 25%; }
+.av-cell { border: 1px solid rgba(255, 255, 255, .08); padding: 0; cursor: crosshair; background: transparent; }
+.av-palette { display: grid; grid-template-columns: repeat(8, 30px); gap: 4px; margin: 10px 0; }
+.av-swatch { width: 30px; height: 30px; border: 2px solid var(--ink, #000); cursor: pointer; padding: 0; }
+.av-swatch.erase { background: repeating-conic-gradient(#888 0 25%, #fff 0 50%) 0 0 / 10px 10px; }
+.av-swatch.active { outline: 3px solid var(--yellow); outline-offset: 1px; }
+.av-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.pf-equip { display: grid; gap: 8px; margin-bottom: 14px; }
+.pf-slot { display: flex; flex-direction: column; gap: 4px; }
+.pf-slot-items { display: flex; gap: 6px; flex-wrap: wrap; }
+.pf-badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.badge { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 10px 6px; background: var(--panel-2); border: 3px solid var(--ink, #000); }
+.badge.locked { opacity: .45; filter: grayscale(1); }
+.badge.got { box-shadow: inset 0 0 0 2px var(--yellow); }
+.badge-icon { font-size: 30px; }
+.badge-name { font-weight: 700; color: var(--yellow); }
+.badge-desc { font-size: 15px; color: var(--muted); }
+.pf-code-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.pf-code-row code { background: var(--input-bg); border: 2px dashed var(--border); padding: 6px 10px; color: var(--ok); font-size: 18px; letter-spacing: .08em; }
+
+/* ---------- Toko ---------- */
+.shop-head { font-size: 22px; } .shop-head b { color: var(--yellow); }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.shop-item { background: var(--panel-2); border: 3px solid var(--ink, #000); padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.shop-item.using { outline: 3px solid var(--ok); outline-offset: -7px; }
+.shop-preview { height: 72px; display: grid; place-items: center; }
+.shop-name { font-weight: 700; }
+.shop-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.theme-swatch { display: grid; grid-template-columns: repeat(2, 26px); border: 3px solid var(--ink, #000); }
+.theme-swatch i { width: 26px; height: 26px; }
+
+/* ---------- Peringkat ---------- */
+.rank-sort { display: flex; gap: 6px; margin-bottom: 10px; }
+.rank-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.rank-row { display: flex; align-items: center; gap: 14px; background: var(--panel-2); border: 3px solid var(--ink, #000); padding: 8px 14px 8px 10px; }
+.rank-row.me { outline: 3px solid var(--primary); outline-offset: -7px; }
+.rank-no { width: 34px; text-align: center; font-family: var(--pixel-font, inherit); font-size: 14px; color: var(--yellow); }
+.rank-name { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.rank-name small { color: var(--muted); font-size: 15px; }
+.rank-val { font-family: var(--pixel-font, inherit); font-size: 11px; color: var(--cyan); white-space: nowrap; }
+
+/* ---------- Popup hadiah ---------- */
+.reward-pop {
+  position: fixed; top: 70px; left: 50%; z-index: 40; min-width: 260px; padding: 18px 26px; text-align: center;
+  background: var(--panel); border: 4px solid var(--ink, #000); outline: 3px solid var(--yellow); outline-offset: -8px;
+  box-shadow: 8px 8px 0 var(--ink, #000), 0 0 40px color-mix(in srgb, var(--yellow) 40%, transparent);
+  transform: translate(-50%, -160%); transition: transform .3s steps(6); cursor: pointer;
+}
+.reward-pop.show { transform: translate(-50%, 0); }
+.reward-title { font-family: var(--pixel-font, inherit); font-size: 18px; color: var(--yellow); text-shadow: 3px 3px 0 var(--ink, #000); margin-bottom: 6px; }
+.reward-gain { display: flex; justify-content: center; gap: 18px; font-size: 26px; margin-top: 6px; }
+.reward-gain span:first-child { color: var(--cyan); } .reward-gain span:last-child { color: var(--yellow); }
+.reward-level { margin-top: 10px; font-family: var(--pixel-font, inherit); font-size: 13px; color: var(--ok); animation: blink .5s steps(1) 6; display: flex; flex-direction: column; gap: 4px; }
+.reward-level small { font-family: var(--text-font, inherit); font-size: 18px; color: var(--muted); }
+.reward-badge { margin-top: 8px; font-size: 22px; background: var(--panel-2); border: 2px solid var(--ink, #000); padding: 4px 10px; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width: 760px) {
+  .pf-grid { grid-template-columns: 1fr; }
+  .av-palette { grid-template-columns: repeat(8, 1fr); }
+  .av-swatch { width: 100%; }
+  .me-chip { font-size: 16px; }
+  .reward-pop { top: 20px; width: calc(100% - 32px); min-width: 0; }
+  .shop-grid, .pf-badges { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Harga item yang belum terjangkau tetap terbaca */
+.shop-item .btn:disabled { filter: none; opacity: .55; }
+.me-chip { white-space: nowrap; }

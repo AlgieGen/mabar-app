@@ -17,7 +17,7 @@ function levenshtein(a, b) {
   return dp[a.length][b.length];
 }
 
-function createTebak(io, systemMessage) {
+function createTebak(io, systemMessage, hooks) {
   const states = new Map(); // kode room -> state game
 
   function get(room) {
@@ -111,6 +111,10 @@ function createTebak(io, systemMessage) {
     if (reason) systemMessage(room, reason);
     else if (ranking.length) systemMessage(room, `🏆 Tebak Gambar selesai! Juaranya ${ranking[0].name} dengan ${ranking[0].score} poin`);
     emitState(room);
+    if (!reason && ranking.length) {
+      const best = ranking[0].score;
+      hooks?.gameOver(room, 'tebak', Object.entries(t.scores).map(([sid, s]) => ({ sid, outcome: best > 0 && s.score === best ? 'win' : 'lose' })));
+    }
   }
 
   // Semua pemain selain penggambar sudah menebak?

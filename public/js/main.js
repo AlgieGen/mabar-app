@@ -8,6 +8,8 @@ import { initUndercover } from './undercover.js';
 import { initUno } from './uno.js';
 import { initWatch } from './watch.js';
 import { initSfx } from './sfx.js';
+import { initProfile } from './profile.js';
+import { avatarHtml } from './avatar.js';
 import { escapeHtml } from './util.js';
 
 const $ = (id) => document.getElementById(id);
@@ -25,6 +27,7 @@ const ctx = {
 };
 
 initSfx(ctx);
+const profile = initProfile(ctx);
 const voice = initVoice(ctx);
 const planning = initPlanning(ctx);
 const photo = initPhoto(ctx);
@@ -45,12 +48,6 @@ function toast(text) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-const COLORS = ['#ff4d6d', '#ffd23f', '#3ddc97', '#4cc9f0', '#9a82ff', '#ff8fab', '#f77f00', '#06d6a0'];
-function colorFor(id) {
-  let h = 0;
-  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return COLORS[h % COLORS.length];
-}
 
 // ---------- Lobby ----------
 const params = new URLSearchParams(location.search);
@@ -78,12 +75,17 @@ function joinRoom(code, userName) {
   });
 }
 
-$('createBtn').onclick = () => {
+let profileReady;
+const ready = new Promise((resolve) => { profileReady = resolve; });
+
+$('createBtn').onclick = async () => {
   const name = getName(); if (!name) return;
+  await ready;
   socket.emit('room:create', { roomName: $('roomName').value }, ({ code }) => joinRoom(code, name));
 };
-$('joinBtn').onclick = () => {
+$('joinBtn').onclick = async () => {
   const name = getName(); if (!name) return;
+  await ready;
   const code = $('joinCode').value.trim().toUpperCase();
   if (!code) { $('lobbyError').textContent = 'Masukkan kode room.'; return; }
   joinRoom(code, name);
@@ -134,7 +136,7 @@ function setMembers(list) {
   ctx.members = list;
   $('memberList').innerHTML = list.map((m) => `
     <li data-id="${m.id}" class="${m.id === ctx.me ? 'me' : ''}">
-      <span class="avatar" style="background:${colorFor(m.id)}">${escapeHtml(m.name[0].toUpperCase())}</span>
+      ${avatarHtml(m.profile, { size: 30, fallback: m.name })}
       <span class="m-name">${escapeHtml(m.name)}${m.id === ctx.me ? ' (kamu)' : ''}</span>
       <span class="m-status"></span>
       <span class="m-icons">${m.inVoice ? (m.muted ? '🔇' : '🎙️') : ''}</span>
@@ -153,7 +155,8 @@ function addChat(msg) {
   } else {
     el.className = 'msg' + (msg.from === ctx.me ? ' mine' : '');
     const time = new Date(msg.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    el.innerHTML = `<div class="msg-name">${escapeHtml(msg.name)}<span class="msg-time">${time}</span></div>${escapeHtml(msg.text)}`;
+    const author = ctx.members.find((m) => m.id === msg.from);
+    el.innerHTML = `<div class="msg-name">${author ? avatarHtml(author.profile, { size: 18, level: false, fallback: msg.name }) : ''}${escapeHtml(msg.name)}<span class="msg-time">${time}</span></div>${escapeHtml(msg.text)}`;
   }
   const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
   log.appendChild(el);
@@ -202,7 +205,9 @@ socket.on('disconnect', () => {
   voice.leave();
   toast('Koneksi terputus, mencoba menyambung lagi...');
 });
-socket.on('connect', () => {
+socket.on('connect', async () => {
+  await profile.hello();
+  profileReady();
   if (!session) return;
   joinRoom(session.code, session.userName);
   toast('Tersambung kembali ✅');

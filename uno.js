@@ -32,7 +32,7 @@ function makeDeck() {
 const CARD_TEXT = { skip: 'Skip', reverse: 'Balik Arah', draw2: '+2', wild: 'Ganti Warna', wild4: '+4' };
 const cardText = (c) => (c.color ? `${CARD_TEXT[c.value] || c.value} ${COLOR_NAME[c.color]}` : CARD_TEXT[c.value]);
 
-function createUno(io, systemMessage) {
+function createUno(io, systemMessage, hooks) {
   const states = new Map();
 
   function get(room) {
@@ -118,6 +118,7 @@ function createUno(io, systemMessage) {
     t.lastAction = reason || `🏆 ${t.names[winner]} menang UNO!`;
     systemMessage(room, t.lastAction);
     emit(room);
+    if (!reason && winner) hooks?.gameOver(room, 'uno', t.order.map((sid) => ({ sid, outcome: sid === winner ? 'win' : 'lose' })));
   }
 
   function register(socket, getRoom) {

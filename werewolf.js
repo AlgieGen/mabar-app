@@ -57,7 +57,7 @@ function plurality(entries) {
   return sorted[0][0];
 }
 
-function createWerewolf(io, systemMessage) {
+function createWerewolf(io, systemMessage, hooks) {
   const states = new Map();
 
   function get(room) {
@@ -305,6 +305,15 @@ function createWerewolf(io, systemMessage) {
     t.lastEvent = reason || texts[winner];
     systemMessage(room, t.lastEvent);
     emit(room);
+    if (winner) {
+      hooks?.gameOver(room, 'werewolf', t.order.map((sid) => {
+        const role = t.players[sid].role;
+        const team = ROLES[role].team;
+        const won = winner === 'lovers' ? !!t.lovers?.includes(sid) : team === winner;
+        const tags = won ? [`win_${role}`, ...(team === 'village' ? ['win_village'] : [])] : [];
+        return { sid, outcome: won ? 'win' : 'lose', tags };
+      }));
+    }
   }
 
   // ---------- Event dari pemain ----------

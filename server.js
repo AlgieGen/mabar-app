@@ -11,6 +11,7 @@ const { createWerewolf } = require('./werewolf');
 const { createUndercover } = require('./undercover');
 const { createUno } = require('./uno');
 const { createWatch } = require('./watch');
+const { createProfiles } = require('./profiles');
 const { Chess } = require('chess.js');
 
 const app = express();
@@ -100,10 +101,30 @@ loadRooms();
 setInterval(saveRooms, 10 * 1000);
 setInterval(cleanupRooms, 60 * 60 * 1000);
 for (const sig of ['SIGINT', 'SIGTERM']) {
-  process.on(sig, () => { dirty = true; saveRooms(); process.exit(0); });
+  process.on(sig, () => { dirty = true; saveRooms(); profiles.save(); process.exit(0); });
 }
 
-const membersList = (room) => [...room.members.entries()].map(([id, m]) => ({ id, ...m }));
+const profiles = createProfiles(io);
+// Anggota room beserta avatar, level, dan aksesori dari profilnya
+const membersList = (room) => [...room.members.entries()].map(([id, m]) => ({ id, ...m, profile: profiles.publicOf(m.profileId) }));
+profiles.onChange((room, socket) => {
+  const r = room || rooms.get(socket?.data.code);
+  if (!r) return;
+  if (socket) { const m = r.members.get(socket.id); if (m) m.name = profiles.nameOf(m.profileId) || m.name; }
+  io.to(r.code).emit('members', membersList(r));
+});
+
+// Dipanggil setiap game selesai untuk membagikan XP & poin
+const hooks = { gameOver: (room, game, results) => profiles.award(room, game, results) };
+
+// Game papan (Tic-Tac-Toe, Connect 4, Catur): hadiah untuk kedua pemain
+function awardBoard(room, g) {
+  if (g.awarded || !g.players.every(Boolean)) return;
+  g.awarded = true;
+  hooks.gameOver(room, g.type, g.players.map((sid, seat) => ({
+    sid, outcome: g.draw ? 'draw' : g.winner === seat ? 'win' : 'lose',
+  })));
+}
 const clean = (s, max) => String(s ?? '').trim().slice(0, max);
 
 function systemMessage(room, text) {
@@ -187,9 +208,9 @@ function checkWinner(game, idx) {
   return null;
 }
 
-const tebak = createTebak(io, systemMessage);
+const tebak = createTebak(io, systemMessage, hooks);
 // Modul permainan/fitur dengan pola yang sama: register, onJoin, onLeave, remove
-const modules = [createWerewolf, createUndercover, createUno, createWatch].map((create) => create(io, systemMessage));
+const modules = [createWerewolf, createUndercover, createUno, createWatch].map((create) => create(io, systemMessage, hooks));
 
 io.on('connection', (socket) => {
   const room = () => rooms.get(socket.data.code);
@@ -201,6 +222,7 @@ io.on('connection', (socket) => {
     if (r) r.lastActive = Date.now();
   });
   tebak.register(socket, room);
+  profiles.register(socket);
   modules.forEach((m) => m.register(socket, room));
 
   // ---------- Room ----------
@@ -216,7 +238,8 @@ io.on('connection', (socket) => {
     const name = clean(userName, 24) || 'Tamu';
     socket.data.code = r.code;
     socket.join(r.code);
-    r.members.set(socket.id, { name, inVoice: false, muted: false });
+    r.members.set(socket.id, { name, inVoice: false, muted: false, profileId: socket.data.profileId || null });
+    if (socket.data.profileId) profiles.setName(socket.data.profileId, name);
     cb?.({
       ok: true,
       me: socket.id,
@@ -329,7 +352,7 @@ io.on('connection', (socket) => {
     const r = room(); const g = r?.game; if (!g || g.winner !== null || g.draw) return;
     if (g.players[g.turn] !== socket.id || !g.players.every(Boolean)) return;
     if (g.type === 'chess') {
-      if (chessMove(g, index)) emitGame(r);
+      if (chessMove(g, index)) { emitGame(r); if (g.winner !== null || g.draw) awardBoard(r, g); }
       return;
     }
     let idx = index;
@@ -350,6 +373,7 @@ io.on('connection', (socket) => {
     else if (g.board.every((c) => c !== null)) g.draw = true;
     else g.turn = 1 - g.turn;
     emitGame(r);
+    if (g.winner !== null || g.draw) awardBoard(r, g);
   });
   socket.on('game:resign', () => {
     const r = room(); const g = r?.game; if (!g || g.winner !== null || g.draw) return;
@@ -358,6 +382,7 @@ io.on('connection', (socket) => {
     g.winner = 1 - seat;
     g.reason = 'Lawan menyerah';
     emitGame(r);
+    awardBoard(r, g);
     systemMessage(r, `🏳️ ${r.members.get(socket.id).name} menyerah`);
   });
   socket.on('game:reset', () => {

@@ -45,7 +45,7 @@ function plurality(votes) {
   return sorted[0][0];
 }
 
-function createUndercover(io, systemMessage) {
+function createUndercover(io, systemMessage, hooks) {
   const states = new Map();
 
   function get(room) {
@@ -201,6 +201,13 @@ function createUndercover(io, systemMessage) {
     t.lastEvent = (reason || texts[winner]) + (t.words ? ` Kata warga: "${t.words.civilian}", kata undercover: "${t.words.undercover}".` : '');
     systemMessage(room, t.lastEvent);
     emit(room);
+    if (winner) {
+      hooks?.gameOver(room, 'undercover', t.order.map((sid) => {
+        const role = t.players[sid].role;
+        const won = winner === 'civilian' ? role === 'civilian' : winner === 'undercover' ? role !== 'civilian' : role === 'white';
+        return { sid, outcome: won ? 'win' : 'lose', tags: won ? [`win_${role}`] : [] };
+      }));
+    }
   }
 
   // ---------- Event ----------

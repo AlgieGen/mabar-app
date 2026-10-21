@@ -23,6 +23,20 @@
   --radius: 0;
   --pixel-font: 'Press Start 2P', monospace;
   --text-font: 'VT323', ui-monospace, monospace;
+  --input-bg: #0a0118;
+  --deep: #12052e;
+  --btn-bg: #3a1f7a;
+  --mine-bg: #4a1450;
+  --card-hi: #2a0e5c;
+  --grid: rgba(90, 47, 214, .14);
+  --danger-bg: #5c0f1f;
+  --danger-text: #ffb3b3;
+  --sq-light: #c9b8ff;
+  --sq-dark: #6b48d6;
+  --placeholder: #7a6bb3;
+  --scan: rgba(0, 0, 0, .16);
+  --overlay: rgba(13, 2, 33, .88);
+  --on-primary: #fff;
   --shadow: 6px 6px 0 var(--ink);
   --shadow-sm: 3px 3px 0 var(--ink);
 }
@@ -42,8 +56,8 @@ body {
     radial-gradient(2px 2px at 68% 12%, #fff6 50%, transparent 51%),
     radial-gradient(2px 2px at 85% 64%, #fff5 50%, transparent 51%),
     radial-gradient(2px 2px at 32% 82%, #fff6 50%, transparent 51%),
-    linear-gradient(rgba(90, 47, 214, .14) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(90, 47, 214, .14) 2px, transparent 2px);
+    linear-gradient(var(--grid) 2px, transparent 2px),
+    linear-gradient(90deg, var(--grid) 2px, transparent 2px);
   background-size: auto, auto, auto, auto, 32px 32px, 32px 32px;
   background-attachment: fixed;
 }
@@ -56,7 +70,7 @@ body::after {
   pointer-events: none;
   z-index: 100;
   background:
-    repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, .16) 2px 4px),
+    repeating-linear-gradient(to bottom, transparent 0 2px, var(--scan) 2px 4px),
     radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, .35) 100%);
 }
 
@@ -81,14 +95,14 @@ h4 { font-size: 11px; color: var(--yellow); margin-bottom: 10px; }
 input, select, textarea {
   font-family: var(--text-font);
   font-size: 21px;
-  background: #0a0118;
+  background: var(--input-bg);
   border: 3px solid var(--border);
   color: var(--text);
   caret-color: var(--ok);
   box-shadow: inset 3px 3px 0 rgba(0, 0, 0, .5);
 }
 input:focus, select:focus, textarea:focus { border-color: var(--cyan); }
-input::placeholder, textarea::placeholder { color: #7a6bb3; }
+input::placeholder, textarea::placeholder { color: var(--placeholder); }
 input[type="checkbox"] { box-shadow: none; }
 
 /* ---------- Tombol 3D pixel ---------- */
@@ -97,7 +111,7 @@ input[type="checkbox"] { box-shadow: none; }
   font-size: 21px;
   line-height: 1;
   text-transform: uppercase;
-  background: #3a1f7a;
+  background: var(--btn-bg);
   color: var(--text);
   border: 3px solid var(--ink);
   padding: 9px 14px 7px;
@@ -106,9 +120,9 @@ input[type="checkbox"] { box-shadow: none; }
 }
 .btn:hover { border-color: var(--ink); filter: brightness(1.18); }
 .btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .4), inset 3px 3px 0 rgba(255, 255, 255, .22); }
-.btn.primary, .btn.active { background: var(--primary); border-color: var(--ink); color: #fff; }
+.btn.primary, .btn.active { background: var(--primary); border-color: var(--ink); color: var(--on-primary); }
 .btn.primary:hover { background: var(--primary); }
-.btn.danger { background: #5c0f1f; color: #ffb3b3; border-color: var(--ink); }
+.btn.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--ink); }
 .btn.small { font-size: 18px; padding: 6px 9px 4px; }
 .btn:disabled { filter: grayscale(.7) brightness(.7); }
 
@@ -145,12 +159,12 @@ input[type="checkbox"] { box-shadow: none; }
 
 /* ---------- Kerangka room ---------- */
 .topbar {
-  background: #12052e;
+  background: var(--deep);
   border-bottom: 4px solid var(--ink);
   box-shadow: 0 4px 0 var(--border);
 }
 .topbar strong { font-size: 14px; color: var(--yellow); text-shadow: 2px 2px 0 var(--primary); }
-.code-pill { font-size: 10px; background: #0a0118; border: 2px solid var(--border); padding: 6px 8px; }
+.code-pill { font-size: 10px; background: var(--input-bg); border: 2px solid var(--border); padding: 6px 8px; }
 .code-pill b { color: var(--ok); }
 .panel {
   background: var(--panel);
@@ -165,7 +179,7 @@ input[type="checkbox"] { box-shadow: none; }
 .tabs { border-bottom: 3px solid var(--border); padding-bottom: 8px; }
 .tab { font-size: 10px; padding: 10px 12px; color: var(--muted); border: 3px solid transparent; }
 .tab:hover { color: var(--text); }
-.tab.active { background: var(--primary); color: #fff; border-color: var(--ink); box-shadow: var(--shadow-sm); }
+.tab.active { background: var(--primary); color: var(--on-primary); border-color: var(--ink); box-shadow: var(--shadow-sm); }
 
 /* Anggota */
 .members li { border: 2px solid transparent; }
@@ -176,7 +190,7 @@ input[type="checkbox"] { box-shadow: none; }
 
 /* Chat */
 .msg { background: var(--panel-2); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-.msg.mine { background: #4a1450; border-color: var(--ink); }
+.msg.mine { background: var(--mine-bg); border-color: var(--ink); }
 .msg .msg-name { font-family: var(--pixel-font); font-size: 9px; color: var(--cyan); margin-bottom: 4px; }
 .msg .msg-time { font-family: var(--text-font); font-size: 16px; }
 .msg.system { color: var(--yellow); font-size: 17px; border: none; box-shadow: none; background: none; }
@@ -195,13 +209,13 @@ input[type="checkbox"] { box-shadow: none; }
 .seat.turn { border-color: var(--ok); box-shadow: 0 0 0 3px var(--ink), 0 0 14px var(--ok); }
 .vs { font-family: var(--pixel-font); font-size: 12px; color: var(--primary); }
 .game-status { font-size: 12px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); line-height: 1.6; }
-.cell { background: #0a0118; border: 3px solid var(--border); font-family: var(--pixel-font); font-size: 30px; }
+.cell { background: var(--input-bg); border: 3px solid var(--border); font-family: var(--pixel-font); font-size: 30px; }
 .cell.win { background: rgba(57, 255, 20, .2); border-color: var(--ok); }
 .board.c4 { background: #1d3bd6; border: 4px solid var(--ink); box-shadow: var(--shadow); }
 .board.c4 .cell { border-radius: 50% !important; border: 3px solid var(--ink); }
 .board.chess { border: 5px solid var(--ink); box-shadow: var(--shadow); }
-.sq.light { background: #c9b8ff; }
-.sq.dark { background: #6b48d6; }
+.sq.light { background: var(--sq-light); }
+.sq.dark { background: var(--sq-dark); }
 .sq.target::after, .sq.capture::after { border-radius: 50% !important; }
 .sq .rank, .sq .file { color: rgba(0, 0, 0, .55); font-family: var(--text-font); font-size: 14px; }
 .chess-moves ol { font-family: var(--text-font); font-size: 19px; }
@@ -209,7 +223,7 @@ input[type="checkbox"] { box-shadow: none; }
 .tg-word { font-size: 18px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); }
 .tg-timer { font-family: var(--pixel-font); font-size: 13px; color: var(--cyan); }
 .tg-timer.low { color: var(--danger); animation: blink .5s steps(1) infinite; }
-.tg-overlay { background: rgba(13, 2, 33, .88); font-size: 22px; }
+.tg-overlay { background: var(--overlay); font-size: 22px; }
 .tg-overlay b { font-family: var(--pixel-font); font-size: 20px; color: var(--yellow); }
 .tg-color { border: 3px solid var(--ink); }
 .tg-color.active { box-shadow: 0 0 0 3px var(--yellow); }
@@ -217,8 +231,8 @@ input[type="checkbox"] { box-shadow: none; }
 
 /* Werewolf & Undercover */
 .ww-phase { font-size: 14px; color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); line-height: 1.5; }
-.ww-event { background: #12052e; border: 3px solid var(--ink); border-left: 8px solid var(--yellow); box-shadow: var(--shadow-sm); }
-.ww-role, .uc-word { background: #2a0e5c; border: 3px solid var(--ink); outline: 3px solid var(--primary); outline-offset: -6px; box-shadow: var(--shadow); }
+.ww-event { background: var(--deep); border: 3px solid var(--ink); border-left: 8px solid var(--yellow); box-shadow: var(--shadow-sm); }
+.ww-role, .uc-word { background: var(--card-hi); border: 3px solid var(--ink); outline: 3px solid var(--primary); outline-offset: -6px; box-shadow: var(--shadow); }
 .ww-role-name { font-size: 11px; color: var(--yellow); line-height: 1.6; }
 .uc-label { font-size: 9px; color: var(--cyan); }
 .uc-secret { font-family: var(--pixel-font); font-size: 22px; color: var(--yellow); text-shadow: 3px 3px 0 var(--primary); margin: 10px 0; }
@@ -226,10 +240,10 @@ input[type="checkbox"] { box-shadow: none; }
 .ww-card.me { outline: 3px solid var(--primary); outline-offset: -6px; }
 .ww-card.speaking-now { box-shadow: 0 0 0 3px var(--ok), var(--shadow-sm); }
 .ww-badge { border: 2px solid var(--ink); font-size: 16px; }
-.ww-pick { border: 3px solid var(--ink); background: #0a0118; }
-.ww-pick.on { background: #4a1450; border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--primary); }
-.uc-clues span { background: #0a0118; border: 2px solid var(--border); font-size: 18px; }
-.ww-witch { background: #12052e; border: 3px solid var(--ink); }
+.ww-pick { border: 3px solid var(--ink); background: var(--input-bg); }
+.ww-pick.on { background: var(--mine-bg); border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--primary); }
+.uc-clues span { background: var(--input-bg); border: 2px solid var(--border); font-size: 18px; }
+.ww-witch { background: var(--deep); border: 3px solid var(--ink); }
 
 /* UNO */
 .uno-player { background: var(--panel-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm); }
