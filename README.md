@@ -30,7 +30,9 @@ npm start
 Buka http://localhost:3000
 
 ## Jalankan di laptop + link publik (gratis)
-Di Windows, klik dua kali **start-mabar.bat**. Server menyala dan Cloudflare Tunnel memberi link `https://....trycloudflare.com` untuk dibagikan ke teman (link berganti setiap start). Laptop harus tetap menyala. Matikan dengan **stop-mabar.bat**.
+Di Windows, klik dua kali **start-mabar.bat**. Server menyala, Cloudflare Tunnel memberi link `https://....trycloudflare.com`, lalu link itu otomatis disimpan ke branch `live-link` (file `link.json`) lewat GitHub CLI.
+
+Bagikan **https://mabarroom.vercel.app** ke teman — halaman di folder `share/` (di-deploy ke Vercel) membaca `link.json` dan meneruskan ke server yang sedang aktif, termasuk kode room (`/?room=AB3XZ`). Laptop harus tetap menyala. Matikan dengan **stop-mabar.bat** (halaman pendek akan menampilkan "server offline").
 
 ## Deploy ke VPS (disarankan)
 Butuh VPS Ubuntu 22.04/24.04 atau Debian 12 dengan IPv4 publik (bukan NAT) dan akses root. Login SSH lalu jalankan:
@@ -81,6 +83,8 @@ watch.js             Nonton YouTube bareng
 ice.js               Server STUN/TURN untuk voice
 profiles.js          Profil, XP/level, lencana, toko, peringkat
 words.js             Daftar kata Tebak Gambar
+share/index.html     Halaman pendek mabarroom.vercel.app
+scripts/publish-link.js  Simpan link tunnel aktif ke GitHub
 public/index.html    Tampilan
 public/style.css
 public/js/main.js     Lobby, room, anggota, chat

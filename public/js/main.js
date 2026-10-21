@@ -116,7 +116,9 @@ function enterRoom({ me, room }) {
 }
 
 $('copyLinkBtn').onclick = async () => {
-  const link = `${location.origin}/?room=${$('roomCode').textContent}`;
+  // Lewat tunnel sementara, bagikan alamat pendek yang selalu diteruskan ke server aktif
+  const base = location.hostname.endsWith('trycloudflare.com') && window.MABAR_SHARE_URL ? window.MABAR_SHARE_URL : location.origin;
+  const link = `${base}/?room=${$('roomCode').textContent}`;
   try { await navigator.clipboard.writeText(link); toast('Link undangan disalin!'); }
   catch { prompt('Salin link ini:', link); }
 };

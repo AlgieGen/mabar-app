@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MabarRoom</title>
+  <meta name="description" content="Bikin room, main game, nonton, dan ngobrol pakai voice bareng teman." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" />
+  <style>
+    :root { --bg: #0d0221; --panel: #1a0b3d; --border: #5a2fd6; --pink: #ff2e88; --cyan: #00e5ff; --yellow: #ffe14d; --muted: #a99be0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      display: grid; place-items: center; padding: 16px; color: #f4f0ff; font-family: 'VT323', monospace; font-size: 22px;
+      background-color: var(--bg);
+      background-image: linear-gradient(rgba(90, 47, 214, .14) 2px, transparent 2px), linear-gradient(90deg, rgba(90, 47, 214, .14) 2px, transparent 2px);
+      background-size: 32px 32px;
+    }
+    .card { width: 100%; max-width: 520px; text-align: center; padding: 32px 24px; background: var(--panel); border: 4px solid #000; outline: 4px solid var(--border); box-shadow: 12px 12px 0 #000; }
+    h1 { font-family: 'Press Start 2P', monospace; font-size: 26px; line-height: 1.5; color: var(--yellow); text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 #000; margin: 0 0 16px; }
+    .status { color: var(--cyan); min-height: 1.2em; }
+    .blink { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--cyan); animation: blink 1s steps(1) infinite; margin-top: 18px; }
+    .muted { color: var(--muted); font-size: 19px; }
+    a.btn { display: inline-block; margin-top: 16px; padding: 10px 16px 8px; background: var(--pink); color: #fff; text-decoration: none; border: 3px solid #000; box-shadow: 3px 3px 0 #000; text-transform: uppercase; }
+    .hidden { display: none; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🎮 MABAR<br />ROOM</h1>
+    <p id="status" class="status">⏳ Mencari server...</p>
+    <p id="detail" class="muted"></p>
+    <a id="go" class="btn hidden" href="#">▶ Masuk</a>
+    <p id="blink" class="blink">LOADING...</p>
+  </main>
+  <script>
+    // Link server yang sedang aktif disimpan di GitHub (branch "live-link") oleh scripts/publish-link.js
+    const SOURCE = 'https://api.github.com/repos/AlgieGen/mabar-app/contents/link.json?ref=live-link';
+    const $ = (id) => document.getElementById(id);
+
+    function ago(ts) {
+      const m = Math.round((Date.now() - ts) / 60000);
+      if (m < 1) return 'baru saja';
+      if (m < 60) return `${m} menit lalu`;
+      const h = Math.round(m / 60);
+      return h < 24 ? `${h} jam lalu` : `${Math.round(h / 24)} hari lalu`;
+    }
+
+    function offline(text) {
+      $('status').textContent = '😴 Server sedang offline';
+      $('detail').textContent = text;
+      $('blink').classList.add('hidden');
+    }
+
+    fetch(`${SOURCE}&t=${Date.now()}`, { cache: 'no-store', headers: { Accept: 'application/vnd.github.raw+json' } })
+      .then((res) => { if (!res.ok) throw new Error(res.status); return res.json(); })
+      .then(({ url, updatedAt }) => {
+        if (!url) return offline('Minta pemilik room menyalakan server dulu ya.');
+        // Bawa kode room dari link undangan, mis. mabarroom.vercel.app/?room=AB3XZ
+        const target = url.replace(/\/$/, '') + '/' + location.search + location.hash;
+        $('status').textContent = '🟢 Server ditemukan! Mengalihkan...';
+        $('detail').textContent = `Server dinyalakan ${ago(updatedAt)}`;
+        $('go').href = target;
+        $('go').classList.remove('hidden');
+        location.replace(target);
+      })
+      .catch(() => offline('Tidak bisa membaca alamat server. Coba muat ulang halaman ini sebentar lagi.'));
+  </script>
+</body>
+</html>
